@@ -1,0 +1,215 @@
+{% load static %}
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+    <HEAD>
+        <META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=utf-8">
+        <TITLE>Simple Demonstration of how WebGazer.js works</TITLE>
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/attention_detector/style.css'%}">
+    </HEAD>
+
+    <BODY LANG="en-US" LINK="#0000ff" DIR="LTR">
+    <div id="mydiv" style="position:absolute; top:2%; left:60%" >
+        <h1 style="color:#C0C0C0" align="right">
+            Click on a few locations within the screen<br>
+            while looking purposefully at the cursor.<br>
+            Both clicks and cursor movements<br>
+            make the predictions more accurate. 
+        </h1>
+
+    </div>
+    <div id = "displayDiv" style="display:none">
+        <div id="youtubeIframe" style="position:absolute; top:15%; left:20%; right:20%; bottom:15%; background-color:green;" >
+        <iframe src="https://www.youtube.com/embed/f7rRi0EUHiM?ecver=1" width="100%" height="100%" frameborder="0" fs="0"></iframe>
+        </div>
+        <div id ="attentionDisplayDiv" style="position:absolute; top:90%; right:90%; height:70px; width:160px">No Position Detected!</div>
+        <div id ="buttonBox" style="position:absolute; top:90%; right:10%; height:80px; width:160px">
+            <button id="b1" name="b1" onclick="recordButtonToggle()">Start</button>
+            <p id="statusRecord">Not Recording</p>
+        </div>
+        <div id ="buttonBox" style="position:absolute; top:90%; right:4%; height:40px; width:80px">
+            <button id="bSend" name="bSend">Send Data</button>
+        </div>
+    </div>
+    <div id="entryBox" style="position:absolute; top:45%; left:45%; height:40px; width:80px">
+        <button id="doneCalib" name="doneCalib" onclick="changeScreen()">Done Calibrating</button>
+    </div>
+    
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/json2/20160511/json2.min.js"></script>
+        <script src="{% static 'js/attention_detector/webgazer.js' %}"></script>
+        <script>
+var recordAttention = 0;
+var attentionPercent = -1.00;
+var colAttentionData = [];
+
+window.setInterval(function(){
+    if (recordAttention == 1) colAttentionData.push(attentionPercent);
+}, 1000);
+
+
+
+window.onload = function() {
+    var attentionDisplayDiv = document.getElementById("attentionDisplayDiv");
+    var videoDivRect = document.getElementById("youtubeIframe");
+    
+    var totalAttention = 0.00;
+    var attentionArray = [];
+    var a_cntr = 0;
+    var a1_cntr = 0;
+    
+    var offsets = videoDivRect.getBoundingClientRect();
+    
+    webgazer.setRegression('ridge') /* currently must set regression and tracker */
+        .setTracker('clmtrackr')
+        .setGazeListener(function(data, clock) {
+         //   console.log(data); /* data is an object containing an x and y key which are the x and y prediction coordinates (no bounds limiting) */
+         //   console.log(clock); /* elapsed time in milliseconds since webgazer.begin() was called */
+        })
+        .begin()
+        .showPredictionPoints(true); /* shows a square every 100 milliseconds where current prediction is */
+    var width = 320;
+    var height = 240;
+    var topDist = '0px';
+    var leftDist = '0px';
+    
+    var setup = function() {
+        var video = document.getElementById('webgazerVideoFeed');
+        video.style.display = 'block';
+        video.style.position = 'absolute';
+        video.style.top = topDist;
+        video.style.left = leftDist;
+        video.width = width;
+        video.height = height;
+        video.style.margin = '0px';
+        webgazer.params.imgWidth = width;
+        webgazer.params.imgHeight = height;
+        var overlay = document.createElement('canvas');
+        overlay.id = 'overlay';
+        overlay.style.position = 'absolute';
+        overlay.width = width;
+        overlay.height = height;
+        overlay.style.top = topDist;
+        overlay.style.left = leftDist;
+        overlay.style.margin = '0px';
+        document.body.appendChild(overlay);
+        var cl = webgazer.getTracker().clm;
+        function drawLoop() {
+            requestAnimFrame(drawLoop);
+            overlay.getContext('2d').clearRect(0,0,width,height);
+            if (cl.getCurrentPosition()) {
+                cl.draw(overlay);
+            }
+            var attentionState = "No attention Data";
+            var predDot = webgazer.getSmoothDot();
+            var pred_x = predDot.x;
+            var pred_y = predDot.y;
+            offsets = videoDivRect.getBoundingClientRect();
+            //attentionDisplayDiv.textContent="X: "+ pred.x + " Y: "+pred.y;
+                        
+            if (recordAttention == 1 && predDot !== null){
+                if (pred_x < offsets.left || pred_y < offsets.top || pred_x > offsets.right || pred_y > offsets.bottom)
+                {
+                    attentionState = "Not attentive.";
+                    attentionArray.push(0);
+                }
+                else{
+                    attentionState = "Attentive";
+                    attentionArray.push(1);
+                }
+                a_cntr = a_cntr+1;
+                if (attentionArray.length == 10)
+                {
+                    a_cntr = 0;
+                    a1_cntr += 1;
+                    var a_sum = 0;
+                    for (var i_a = 0; i_a < 10; i_a++){
+                        a_sum+=parseInt(attentionArray[i_a]);
+                    }
+		            if (a_sum >= 5){
+		                totalAttention += 1;
+		            }
+		            else{
+		                totalAttention += 0;
+		            }
+		            attentionArray = [];
+                    
+                }
+		        
+            }
+            attentionPercent = (totalAttention * 100)/a1_cntr;
+		    attentionDisplayDiv.textContent = "X: " +pred_x+" Y: "+pred_y+" "+attentionState+" AttentionPercent: "+attentionPercent;
+        }
+            
+        drawLoop();
+    };
+    function checkIfReady() {
+        if (webgazer.isReady()) {
+            setup();
+        } else {
+            setTimeout(checkIfReady, 100);
+        }
+    }
+    setTimeout(checkIfReady,100);
+};
+window.onbeforeunload = function() {
+    //webgazer.end(); //Uncomment if you want to save the data even if you reload the page.
+    window.localStorage.clear(); //Comment out if you want to save data across different sessions 
+}
+function recordButtonToggle() {
+    
+    text = document.getElementById("b1").innerHTML;
+    if (text == "Start") {
+        document.getElementById("b1").innerHTML = "Stop";
+        document.getElementById("statusRecord").innerHTML = "Recording Started!";
+        recordAttention = 1;
+    }
+    else {
+        document.getElementById("b1").innerHTML = "Start";   
+        document.getElementById("statusRecord").innerHTML = "Not Recording!";
+        recordAttention = 0;
+    } 
+}
+
+function changeScreen(){
+
+    document.getElementById('displayDiv').style.display = "block";
+    document.getElementById('entryBox').style.display = "none";
+
+}
+
+/*
+function sendAttentionData(){
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            document.getElementById("txtHint").innerHTML = this.responseText;
+        }
+    };
+    xmlhttp.open("POST", "" + str, true);
+    xmlhttp.send();
+}
+*/
+
+$(document).ready(function(){
+    $('#bSend').click(function(){
+        //alert("clicked");
+        $.ajax({
+                type: "POST",
+                data: {colAttentionData:colAttentionData},
+                url: "../get_attention_data/", 
+                
+                success: function(result){
+                    alert(result);
+                },
+                error: function(xhr, textStatus, errorThrown){
+                    alert('request failed');
+                }
+        });
+    });
+});
+
+</script>
+
+    </BODY>
+</HTML>

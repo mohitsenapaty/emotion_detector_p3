@@ -1,0 +1,121 @@
+{% load static %}
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+    <HEAD>
+        <META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=utf-8">
+	<TITLE>Learn with Dharna</TITLE>
+	<link rel="stylesheet" type="text/css" href="{% static 'styles/common/home_style.css'%}">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <style>
+    table {
+        font-family: arial, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    td, th {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+    }
+
+    tr:nth-child(even) {
+        background-color: #dddddd;
+    }
+    </style>
+    </HEAD>
+    <BODY>
+	<div class="top"> 
+		<p>
+		<center>Better Education through Better Technology</center>
+		</p>
+	</div>
+	<div class="left">
+		
+  		{% if is_logged_in == 0 %} 
+		<p>You are not logged in</p>
+	  		<p><a href="#" id ="a_log_in">Live Learning Login</a></p>
+		{% else %}
+		<p>Welcome, {{ username }} Logined as {{ logintype }}</p>
+		            {% if logintype == 'teacher' %}
+                <p><a href="/teacher_profile_info/" >Profile</a></p>
+                <p><a href="/teacher_prev_lectures/" >Past Lecture details</a></p>
+                <p><a href="/teacher_new_lectures/" >Upcoming Lecture details</a></p>
+                <p><a href="/teacher_create_lecture/" >Create new lectures</a></p>
+            {% else %}
+                <p><a href="/student_profile_info/" >Profile</a></p>
+                <p><a href="/student_prev_lectures/" >Past Lecture details</a></p>
+                <p><a href="/student_new_lectures/" >Upcoming Lecture details</a></p>
+            {% endif %}
+		<p><a href="/log_out/" id ="a_log_out">Log out</a></p>
+		{% endif %}
+		<p><a href="/">Main Page</a></p>
+  		
+	</div>
+	<div class="main">
+	{% if error_message != 'None' %}
+		<div><p>{{ error_message }}</p></div>
+	{% endif %}
+        {% if is_logged_in == 0 %}
+	    <div>You need to login to access this page</div>
+        {% else %}
+        <div>
+            <p>
+                <center>Welcome, {{username}}</center>
+            </p>
+            <p>
+                teacher id: {{ teacher_id }} </br>
+                teacher username: {{ username }} </br>
+            </p>
+            
+        </div>
+        <div> 
+            <p><table>
+                <tr>
+                <th>Lecture id</th>
+                <th>Teacher id</th>
+                <th>Class id</th>
+                <th>School id</th>
+                <th>Lecture Start time</th>
+                <th>Lecture End time</th>
+                <th>Subject</th>
+                <th>Topic</th>
+                <th>Description</th>
+                <th>Status</th>
+                </tr>
+                {% for elem in disp_arr %}
+                    <tr>
+                    <td>{{ elem.lecture_id }}</td> 
+                    <td>{{ elem.teacher_id }}</td> 
+                    <td>{{ elem.entity_id }}</td> 
+                    <td>{{ elem.school_id }}</td> 
+                    <td>{{ elem.lecture_start_time }}</td> 
+                    <td>{{ elem.lecture_end_time }}</td> 
+                    <td>{{ elem.subject }}</td>
+                    <td>{{ elem.topic }}</td> 
+                    <td>{{ elem.description }}</td>
+                    <td>{{ elem.status }}</td>
+                    </tr>
+                {% endfor %}
+            </table></p>
+        </div>
+        {% endif %}
+	</div>
+	<div class="topleft">
+		<p>
+		<center>Learn with Dharna</center>
+		</p>
+	</div>
+    </BODY>
+<script type="text/javascript"> 
+/*function funcMissionStatement(){
+	var el = document.getElementById('foo');
+	var el = document.getElementById('foo');
+	var el = document.getElementById('foo');
+	var el = document.getElementById('foo');
+	var el = document.getElementById('foo'); 
+}
+*/
+
+</HTML>

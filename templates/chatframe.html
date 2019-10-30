@@ -1,0 +1,83 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{% static "main.css" %}" type="text/css" media="screen" />
+    {% block extra_head %}{% endblock %}
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+</head>
+<body>
+    
+    
+    
+    <div id="accordion-resizer" class="ui-widget-content" style="position:absolute; bottom:0px; width:20%; height:33%; right:0%">
+        <div id="accordion" style="position:absolute; bottom:0px;width:100%;">
+            <h3>Chat</h3>
+            <div>
+                <div id="displayChatMessages" style="overflow-y: auto; height:90%; word-wrap: break-word;"></div>
+                <div id="sendChatMessages" style="position:absolute; bottom:0%;">
+                {% if is_logged_in == 1 %}
+                    {% csrf_token %}
+                    <textarea rows="1" cols="43" id="usertext" placeholder="type here to ask doubt">
+                    
+                    </textarea>
+                {% else %}
+                <p>
+                    You are Not logged in. Click <a href="/login_page/">here<a> to go to the lecture page.<br />
+                    Alternatively, click <a href="/">here<a> to Go to the main page. 
+                <p>
+                {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script>
+$(document).ready(function(){
+    var ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
+    socket = new WebSocket( ws_scheme + "://" + window.location.host + "/chat/");
+    socket.onmessage = function(e) {
+        //alert(e);
+        //msgText=$('#displayChatMessages').text();
+        //msgText +="\n";
+        msgText = e.data;
+        $('#displayChatMessages').append(msgText+"<br/>");
+        $('#usertext').val('');
+    }
+    socket.onopen = function() {
+        //socket.send($('#usertext').val());
+        alert("socket is opened")
+    }
+    // Call onopen directly if socket is already open
+    if (socket.readyState == WebSocket.OPEN) socket.onopen();
+    $('#usertext').keypress(function(e){
+        if(e.keyCode==13){
+            socket.send($('#usertext').val());
+            //$('#usertext').val('');
+        }
+    });
+
+});
+</script>
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <script>
+  $( function() {
+    $( "#accordion" ).accordion({
+        collapsible: true,
+        heightStyle: "fill"
+    });
+    $( "#accordion-resizer" ).resizable({
+      //minHeight: 140,
+      //minWidth: 200,
+      resize: function() {
+        $( "#accordion" ).accordion( "refresh" );
+      }
+    });
+  } );
+  </script>
+
+</html>

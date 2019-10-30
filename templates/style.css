@@ -1,0 +1,27 @@
+    .top {
+        position:absolute;
+        left:0; right:0;
+        height: 100px;
+    }
+    .left {
+        position:absolute;
+        left:0; top:100px; bottom: 0;
+        width: 200px;
+    }
+    .main {
+        position: absolute;
+        left:200px; top:100px; right:0; bottom:0;
+    }
+    .topleft{
+      position:absolute;
+      left:0; top:0;
+      width:200px;
+      height:100px;
+    }
+
+.top { background: #5555F0; }
+.left { background: teal; }
+.main { background: white; }
+.topleft {background: #1111F0; border-width:2px; font-size:30px; color:white;}
+
+

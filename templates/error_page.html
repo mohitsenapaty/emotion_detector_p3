@@ -1,0 +1,102 @@
+{% load static %}
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+    <HEAD>
+        <META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=utf-8">
+        <TITLE>Simple Demonstration of how WebGazer.js works</TITLE>
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/common/home_style.css'%}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    </HEAD>
+    <BODY>
+    <div class="top"> 
+        <p>
+        <center>Teaching with Technology</center>    
+        </p>
+    </div>
+    <div class="left">
+        
+        {% if is_logged_in == 0 %} 
+        <p>You are not logged in</p>
+            <p><a href="#" id ="a_log_in">Live Learning Login</a></p>
+            <p><a href="/" id ="a_log_in">Home page</a></p>
+        {% else %}
+            <p>Welcome, {{ username }} Logined as {{ logintype }}</p>
+            {% if logintype == 'teacher' %}
+                <p><a href="/teacher_profile_info/" >Profile</a></p>
+                <p><a href="/teacher_prev_lectures/" >Past Lecture details</a></p>
+                <p><a href="/teacher_new_lectures/" >Upcoming Lecture details</a></p>
+                <p><a href="/teacher_create_lecture/" >Create new lectures</a></p>
+            {% else %}
+                <p><a href="/student_profile_info/" >Profile</a></p>
+                <p><a href="/student_prev_lectures/" >Past Lecture details</a></p>
+                <p><a href="/student_new_lectures/" >Upcoming Lecture details</a></p>
+            {% endif %}
+            <p><a href="/log_out/" id ="a_log_out">Log out</a></p>
+        {% endif %}
+        <p><a href="/">Main Page</a></p>
+          
+    </div>
+    <div class="main">
+        <div>Uh! Oh! Something went wrong. Given below are the following reasons.</div>
+        {% if error_message == 'None' %}
+            <p>There has been error from our side, we are looking to fix it.</p>
+        {% else %}
+            <p> {{ error_message }} </p>
+        {% endif %}
+    </div>
+    <div class="topleft">
+        <p>
+        <center>Dharna Icon here</center>
+        </p>
+    </div>
+    </BODY>
+<script type="text/javascript"> 
+/*function funcMissionStatement(){
+    var el = document.getElementById('foo');
+    var el = document.getElementById('foo');
+    var el = document.getElementById('foo');
+    var el = document.getElementById('foo');
+    var el = document.getElementById('foo'); 
+}
+*/
+window.onload = function(){
+    var divMS = document.getElementById("a_missionStatement");
+    var divDharna = document.getElementById("a_dharna_v1_0");
+    var divContact = document.getElementById("a_contactUs");
+    var divDemo = document.getElementById("a_liveDemo");
+
+    divMS.onclick = function(){
+        document.getElementById("dharna_v1_0").style.display="none";
+        document.getElementById("missionStatement").style.display="block";
+        document.getElementById("contactUs").style.display="none";
+        document.getElementById("liveDemo").style.display="none";
+        return false;
+    };
+    divDharna.onclick = function(){
+        //alert("hello");
+        document.getElementById("dharna_v1_0").style.display="block";
+        document.getElementById("missionStatement").style.display="none";
+        document.getElementById("contactUs").style.display="none";
+        document.getElementById("liveDemo").style.display="none";
+        return false;
+    };
+    divContact.onclick = function(){
+        document.getElementById("dharna_v1_0").style.display="none";
+        document.getElementById("missionStatement").style.display="none";
+        document.getElementById("contactUs").style.display="block";
+        document.getElementById("liveDemo").style.display="none";
+        return false;
+    };
+    divDemo.onclick = function(){
+        document.getElementById("dharna_v1_0").style.display="none";
+        document.getElementById("missionStatement").style.display="none";
+        document.getElementById("contactUs").style.display="none";
+        document.getElementById("liveDemo").style.display="block";
+        return false;
+    };
+
+}
+</script>
+
+</HTML>

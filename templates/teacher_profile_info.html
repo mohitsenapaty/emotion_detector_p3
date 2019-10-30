@@ -1,0 +1,93 @@
+{% load static %}
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+    <HEAD>
+        <META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=utf-8">
+        <TITLE>Learn with Dharna</TITLE>
+	<link rel="stylesheet" type="text/css" href="{% static 'styles/common/home_style.css'%}">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    </HEAD>
+    <BODY>
+	<div class="top"> 
+		<p>
+		<center>Better Education through Better Technology</center>	
+		</p>
+	</div>
+	<div class="left">
+		
+  		{% if is_logged_in == 0 %} 
+		<p>You are not logged in</p>
+	  		<p><a href="#" id ="a_log_in">Live Learning Login</a></p>
+		{% else %}
+		<p>Welcome, {{ username }} Logined as {{ logintype }}</p>
+		            {% if logintype == 'teacher' %}
+                <p><a href="/teacher_profile_info/" >Profile</a></p>
+                <p><a href="/teacher_prev_lectures/" >Past Lecture details</a></p>
+                <p><a href="/teacher_new_lectures/" >Upcoming Lecture details</a></p>
+                <p><a href="/teacher_create_lecture/" >Create new lectures</a></p>
+            {% else %}
+                <p><a href="/student_profile_info/" >Profile</a></p>
+                <p><a href="/student_prev_lectures/" >Past Lecture details</a></p>
+                <p><a href="/student_new_lectures/" >Upcoming Lecture details</a></p>
+            {% endif %}
+		<p><a href="/log_out/" id ="a_log_out">Log out</a></p>
+		{% endif %}
+		<p><a href="/">Main Page</a></p>
+  		
+	</div>
+	<div class="main">
+	{% if error_message != 'None' %}
+		<div><p>{{ error_message }}</p></div>
+	{% endif %}
+        {% if is_logged_in == 0 %}
+	    <div>You need to login to access this page</div>
+        {% else %}
+        <div>
+            <p>
+                <center>Welcome, {{username}}</center>
+            </p>
+            <p>
+                teacher id: {{ teacher_login.teacher_id }} </br>
+                teacher username: {{ teacher_login.username }} </br>
+            </p>
+            <p>
+                
+                first name: {{ teacher_detail.first_name }} </br>
+                middle name: {{ teacher_detail.middle_name }} </br>
+                last name: {{ teacher_detail.last_name }} </br>
+                phone: {{ teacher_detail.phone }} </br>
+                email: {{ teacher_detail.email }} </br>
+            </p>
+            <p><a href="/update_teacher_info/">Click here</a> to edit the details.</p>
+        </div>
+        <div> 
+            <p>
+                Section to view previous lectures. <a href="/teacher_prev_lectures/">Click here</a> to view previous lectures. 
+            </p>
+            <p>
+                Section to view upcoming lectures. <a href="/teacher_new_lectures/">Click here</a> to view upcoming lectures.
+            </p>
+            <p>
+                <a href="/teacher_create_lecture/">Click here</a> to add lectures.
+            </p>
+        </div>
+        {% endif %}
+	</div>
+	<div class="topleft">
+		<p>
+	    <center>Learn With Dharna</center>
+		</p>
+	</div>
+    </BODY>
+<script type="text/javascript"> 
+/*function funcMissionStatement(){
+	var el = document.getElementById('foo');
+	var el = document.getElementById('foo');
+	var el = document.getElementById('foo');
+	var el = document.getElementById('foo');
+	var el = document.getElementById('foo'); 
+}
+*/
+
+</HTML>

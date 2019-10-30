@@ -1,0 +1,192 @@
+{% load static %}
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+    <HEAD>
+        <META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=utf-8">
+        <TITLE>Learn with Dharna</TITLE>
+	<link rel="stylesheet" type="text/css" href="{% static 'styles/common/home_style.css'%}">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    </HEAD>
+    <BODY>
+	<div class="top"> 
+		<p>
+		<center>Better Education through Better Technology</center>	
+		</p>
+	</div>
+	<div class="left">
+		<p><a href="#" id="a_missionStatement">Mission Statement</a></p>
+		<p><a href="#" id="a_dharna_v1_0">Dharna v1.0</a></p>
+		<p><a href="#" id="a_contactUs">Contact Us</a></p>
+		<p><a href="#" id="a_liveDemo">Live Demo</a></p>
+        {% if is_logged_in == 0 %} 
+            <p>You are not logged in</p>
+  		    <p><a href="#" id ="a_log_in">Live Learning Login</a></p>
+            <p><a href="/register_page">Click Here</a> to Register.</p>
+        {% else %}
+            <p>Welcome, {{ username }} Logined as {{ logintype }}</p>
+            {% if logintype == 'teacher' %}
+                <p><a href="/teacher_profile_info/" >Profile</a></p>
+                <p><a href="/teacher_prev_lectures/" >Past Lecture details</a></p>
+                <p><a href="/teacher_new_lectures/" >Upcoming Lecture details</a></p>
+                <p><a href="/teacher_create_lecture/" >Create new lectures</a></p>
+            {% else %}
+                <p><a href="/student_profile_info/" >Profile</a></p>
+                <p><a href="/student_prev_lectures/" >Past Lecture details</a></p>
+                <p><a href="/student_new_lectures/" >Upcoming Lecture details</a></p>
+                <p><a href="/login_combined_app/" >Login Combined App</a></p>
+	    {% endif %}
+            <p><a href="/log_out/" id ="a_log_out">Log out</a></p>
+        {% endif %}
+	</div>
+	<div class="main">
+	    <div id="missionStatement" style="display:block">
+			<p>
+			<center><h2>Our Mission - School the Unschooled</h2></center>
+			</p>
+			<p>	
+				Dharna is a innovative educational platform that focuses on increasing the efficiency of
+				both the teaching and the learning process, by imbibing innovation and latest technology 
+				that has immense potential in the field of education. Moreover, Dharna is an attempt to
+				improve upon the teacher to student ratio by making learning on diverse topics more accessible.
+			</p>
+			<p>
+				With time, all aspects of our life is getting more and more dependent on technology, be it
+				communication, transportation, commerce or any other important part of our life.  
+			</p>
+			<p>
+				One area, technology has affected the least is education and learning. We are still stuck with
+				old classroom method of teaching, where a single teacher strives hard to teach a whole batch or
+				section of students. Eventhough, video tutorial applications and e-learning is getting more and
+				more popular, it seems to be lacking the most important fact of learning i.e, recieveing and 
+				analysing learner feedback such as emotion, interest and attention of the student. 
+			</p>
+			<p>
+				We strive to create a robust product that not only allows realtime feedback while e-learning
+				but also, analyses the learner feedback at realtime and modifies teaching strategy on the fly
+				depending on the learner. So, the learner not only benefits from having a dedicated teacher 
+				paying individual attention, but also frees up the teachers to decide the content and flow of
+				a learning session and not worry about distractions and disturbance which might be prevalent 
+				in a classroom session.
+			</p>
+			<p>
+				Our mission is simple, provide a single teacher or teaching agent to each and every learner 
+				and bringforth a revolution where learning is automated as well.  
+			</p>
+			<div>
+			<p>
+			<center><h2>Developed and Conceptualized by:-</h2></center>
+			</p>
+			<div>
+			<p>
+				Shatabdi Singha<br>
+				Founder, Spark Educators
+			</p>
+			</div>
+			<div align="right">
+				Mohit Senapaty<br>
+				B.Tech, Indian Institute of Technology, Kharagpur
+			</div>
+			</div>
+		</div>
+		<div id="currentStatus" style="display:none;"> will add current status
+		</div>
+		<div id="contactUs" style="display:none;"> will add contact details
+		</div>
+		<div id="dharna_v1_0" style="display:none;"> will add details about dharna version 1
+		</div>
+		<div id="liveDemo" style="display:none">
+			<a href="/eye_gaze_tracker/">Click Here</a> attention eye detection <br /> 
+        	<a href="/emotion_detector/">Click Here</a> for emotion detection <br />
+			<a href="/combined_app/">Click Here</a> for combined app <br />
+			<a href="/combined_app_live/">Click Here</a> for combined app with live streaming<br />
+			<a href="/login_combined_app/">Click Here</a> for combined app with Login enabled<br />
+            <a href="/login_combined_app_test/">Click Here</a> for combined app with Login enabled<br />
+		</div>
+                <div id ="login" style="display:none">
+			{% if not is_logged_in %}
+	    		<form name="LoginForm" action="/login_page/" method="post">
+			{% csrf_token %}
+				Username: <input type="text" id="username" name="username"  placeholder="Username"> <br />
+				Password: <input type="password" id="password" name="password"  placeholder="Password"> <br />
+    			Select Type: 	<input type="radio" name="logintype" value="student" checked> Student<br>
+  					            <input type="radio" name="logintype" value="teacher"> Teacher<br>
+
+				<button type="submit">Login</button>
+			</form>
+        		{% else %}
+        		<p>
+            			You are already logged in. Click <a href="/combined_app/">here<a> to go to the lecture page.<br />
+            			Alternatively, click <a href="/log_out/">here<a> to Log out. 
+        		</p>
+        		{% endif %}
+		</div>
+	</div>
+	<div class="topleft">
+		<p>
+	    <center>Learn with Dharna</center>
+		</p>
+	</div>
+    </BODY>
+<script type="text/javascript"> 
+/*function funcMissionStatement(){
+	var el = document.getElementById('foo');
+	var el = document.getElementById('foo');
+	var el = document.getElementById('foo');
+	var el = document.getElementById('foo');
+	var el = document.getElementById('foo'); 
+}
+*/
+window.onload = function(){
+	var divMS = document.getElementById("a_missionStatement");
+	var divDharna = document.getElementById("a_dharna_v1_0");
+	var divContact = document.getElementById("a_contactUs");
+	var divDemo = document.getElementById("a_liveDemo");
+	var divLogin = document.getElementById("a_log_in");
+
+	divMS.onclick = function(){
+		document.getElementById("dharna_v1_0").style.display="none";
+		document.getElementById("missionStatement").style.display="block";
+		document.getElementById("contactUs").style.display="none";
+		document.getElementById("liveDemo").style.display="none";
+		document.getElementById("login").style.display="none";
+		return false;
+	};
+	divDharna.onclick = function(){
+		//alert("hello");
+		document.getElementById("dharna_v1_0").style.display="block";
+		document.getElementById("missionStatement").style.display="none";
+		document.getElementById("contactUs").style.display="none";
+		document.getElementById("liveDemo").style.display="none";
+		document.getElementById("login").style.display="none";
+		return false;
+	};
+	divContact.onclick = function(){
+		document.getElementById("dharna_v1_0").style.display="none";
+		document.getElementById("missionStatement").style.display="none";
+		document.getElementById("contactUs").style.display="block";
+		document.getElementById("liveDemo").style.display="none";
+		document.getElementById("login").style.display="none";
+		return false;
+	};
+	divDemo.onclick = function(){
+		document.getElementById("dharna_v1_0").style.display="none";
+		document.getElementById("missionStatement").style.display="none";
+		document.getElementById("contactUs").style.display="none";
+		document.getElementById("liveDemo").style.display="block";
+		document.getElementById("login").style.display="none";
+		return false;
+	};
+	divLogin.onclick = function(){
+		document.getElementById("dharna_v1_0").style.display="none";
+		document.getElementById("missionStatement").style.display="none";
+		document.getElementById("contactUs").style.display="none";
+		document.getElementById("liveDemo").style.display="none";
+		document.getElementById("login").style.display="block";
+		return false;
+	};
+    
+}
+</script>
+
+</HTML>

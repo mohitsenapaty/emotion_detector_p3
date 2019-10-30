@@ -1,0 +1,48 @@
+{% load static %}
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+    <HEAD>
+        <META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=utf-8">
+        <TITLE>Learn with Dharna</TITLE>
+        <link rel="stylesheet" type="text/css" href="{% static 'styles/common/new_home_style.css'%}">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="{% static 'js/new_home.js' %}?v=00000001"></script>
+    </HEAD>
+    <body>
+        <div class="header" id="myHeader">
+            <div class="main-header">
+            <h1>Learn With Dharna</h1>
+            </div>
+            <div class="header_links">
+                <h2>
+                <a href="/">Home</a> 
+                <a href="/team/">Team</a>
+                <a href="/contact/">Contact</a>
+                <a href="/live_demo/">Live Demo</a>
+                <a href="/blog/">Blog</a>
+                {% if is_logged_in == 0 %} 
+                <a href="/login_page/">Login</a>/<a href="/register_page/">Register</a>
+                {% else %}
+                {{ username }}
+                {% endif %}
+                </h2>
+            </div>
+            <!--div style="clear: both;"></div--> 
+        </div>
+
+        <div class="content">
+        <div class="demo_links">
+            <a href="/eye_gaze_tracker/">Click Here</a> attention eye detection <br /> 
+            <a href="/emotion_detector/">Click Here</a> for emotion detection <br />
+            <a href="/combined_app/">Click Here</a> for combined app <br />
+            <a href="/combined_app_live/">Click Here</a> for combined app with live streaming<br />
+            <a href="/login_combined_app/">Click Here</a> for combined app with Login enabled<br />
+            <a href="/login_combined_app_test/">Click Here</a> for combined app with Login enabled<br />
+        </div>
+        </div>
+        <div class="footer">
+            This is some sample Text.
+        </div>
+    </body>
+</html>
