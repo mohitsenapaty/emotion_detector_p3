@@ -38,7 +38,7 @@ def main():
 
     # API v2
     transferData.upload_file(file_from=file_from, file_to=file_to)
-    print transferData.get_shared_file_url()
+    print (transferData.get_shared_file_url())
 
 if __name__ == '__main__':
     main()

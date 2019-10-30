@@ -12,7 +12,7 @@ from pytz import timezone
 from .models import *
 import MySQLdb 
 import dateutil.parser
-import upload_to_dropbox
+from . import upload_to_dropbox
 
 DROPBOX_ACCESS_TOKEN = "t0-WvXEmgaAAAAAAAAAABkLheYrQk8TjSZBJHBgkn1nQ3X0K6z0H-P_zABFzFY9E"
 
@@ -281,7 +281,7 @@ def get_attention_data(request):
     transferData1 = upload_to_dropbox.upload_to_dropbox(DROPBOX_ACCESS_TOKEN)
     transferData1.upload_file(file_from=glob_emo_file, file_to="/dharna_app/%s"%(glob_emo_file))
     emo_file_url = transferData1.get_shared_file_url()
-    print att_file_url, emo_file_url
+    print(att_file_url, emo_file_url)
     return HttpResponse("Success!")
 
 @csrf_exempt
@@ -328,7 +328,7 @@ def get_attention_data_test(request):
     sd_obj = StudentDetail.objects.get(student_id=_id)
         #send_email.send_email_client(sd_obj.__dict__.get("email"),"date:val time:val", "dharna graph for user", [glob_att_file, glob_emo_file])
         #upload attention file
-    print glob_att_file, glob_emo_file
+    print (glob_att_file, glob_emo_file)
     transferData = upload_to_dropbox.upload_to_dropbox(DROPBOX_ACCESS_TOKEN)
     transferData.upload_file(file_from="%s"%(glob_att_file), file_to="/dharna_app/%s"%(glob_att_file))
     att_file_url = transferData.get_shared_file_url()
@@ -338,7 +338,7 @@ def get_attention_data_test(request):
     emo_file_url = transferData1.get_shared_file_url()
     #except:
         #return HttpResponse("Failure!")
-    print att_file_url, emo_file_url
+    print (att_file_url, emo_file_url)
     #load data ti database
     lt_obj = LectureTeacher.objects.get(lecture_id=_lecture_id)
     sl_obj = StudentLogin.objects.get(student_id=_id)
@@ -792,7 +792,7 @@ def login_combined_app_test(request):
         # get lecture id
         _lecture_id = request.session.get("lecture_id")
         # check if the type is student or teacher
-        print _lecture_id
+        print (_lecture_id)
         if _type == 'teacher':
             #lt_obj = LectureTeacher()
             if LectureTeacher.objects.get(lecture_id=_lecture_id).exists():
@@ -824,7 +824,7 @@ def login_combined_app_test(request):
             pass
         pass
     else:
-        print 1
+        print (1)
         return HttpResponseRedirect('/error_page/')
         #invalid page error.
 
@@ -1398,14 +1398,14 @@ def teacher_new_lectures(request):
             _o_tm = dateutil.parser.parse(lt_obj.__dict__.get("lecture_end_time").strftime("%Y-%m-%d %H:%M:%S"))
             _o_tm_temp = lt_obj.__dict__.get("lecture_end_time").astimezone(timezone('Asia/Calcutta'))
             _s_tm_temp = lt_obj.__dict__.get("lecture_start_time").astimezone(timezone('Asia/Calcutta'))
-            print _o_tm, _c_tm, _o_tm_temp.replace(tzinfo=None)
+            #print _o_tm, _c_tm, _o_tm_temp.replace(tzinfo=None)
             if _o_tm_temp.replace(tzinfo = None) >= _c_tm:
                 tmp_dict = lt_obj.__dict__
                 tmp_dict["lecture_start_time"] = dateutil.parser.parse(_s_tm_temp.strftime("%Y-%m-%d %H:%M:%S"))
                 tmp_dict["lecture_end_time"] = dateutil.parser.parse(_o_tm_temp.strftime("%Y-%m-%d %H:%M:%S"))
                 disp_arr.append(tmp_dict)
         #print disp_arr
-        print len(disp_arr)
+        #print len(disp_arr)
         template = 'teacher_new_lectures.html'
         returnDict = {'is_logged_in':is_logged_in, 'username':request.session.get("username"), 'teacher_id':request.session.get("id"),'logintype':request.session.get('type'), 'len':len(disp_arr), 'disp_arr':disp_arr}
         return render(request, template, returnDict)
@@ -1522,7 +1522,7 @@ def attend_lecture_student(request, lecture_id1):
         if ls_obj == None:
             return HttpResponseRedirect('/error_page/')
         if not lt_obj.__dict__.get("status") == 'O':
-            print 1
+            #print 1
             return HttpResponseRedirect('/error_page/')
         request.session["lecture_id"] = i_lecture_id
         ls_obj.present = 'Y'
@@ -1701,7 +1701,7 @@ def get_attention_data_rl(request):
     sd_obj = StudentDetail.objects.get(student_id=_id)
         #send_email.send_email_client(sd_obj.__dict__.get("email"),"date:val time:val", "dharna graph for user", [glob_att_file, glob_emo_file])
         #upload attention file
-    print glob_att_file, glob_emo_file
+    #print glob_att_file, glob_emo_file
     transferData = upload_to_dropbox.upload_to_dropbox(DROPBOX_ACCESS_TOKEN)
     transferData.upload_file(file_from="%s"%(glob_att_file), file_to="/dharna_app/%s"%(glob_att_file))
     att_file_url = transferData.get_shared_file_url()
@@ -1756,9 +1756,9 @@ def end_lecture_student(request):
         _id = request.session.get("id")
     if not request.session.get("lecture_id") == None:
         i_lecture_id = request.session.get("lecture_id")
-        print i_lecture_id
+        #print i_lecture_id
         del request.session["lecture_id"]
-    print i_lecture_id
+    #print i_lecture_id
     template = 'end_lecture_student.html'
     returnDict = {'is_logged_in':is_logged_in, 'username':request.session.get("username"), 'lecture_id':request.session.get('lecture_id'), 'logintype':request.session.get('type'), 'lecture_id':i_lecture_id}
     return render(request, template, returnDict)
@@ -1778,9 +1778,9 @@ def end_lecture_teacher(request):
         lt_obj = LectureTeacher.objects.get(lecture_id=i_lecture_id, teacher=TeacherLogin.objects.get(teacher_id=_id))
         lt_obj.status = 'E'
         lt_obj.save()
-        print i_lecture_id
+        #print i_lecture_id
         del request.session["lecture_id"]
-    print i_lecture_id
+    #print i_lecture_id
     template = 'end_lecture_teacher.html'
     returnDict = {'is_logged_in':is_logged_in, 'username':request.session.get("username"), 'lecture_id':request.session.get('lecture_id'), 'logintype':request.session.get('type'), 'lecture_id':i_lecture_id}
     return render(request, template, returnDict)
