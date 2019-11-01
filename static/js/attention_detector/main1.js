@@ -8,7 +8,9 @@ var midContentDiv;
 var done_submitting = 0;
 
 window.setInterval(function(){
-    if (started == 1 && globEmotionData !== false) colEmotionData.push(globEmotionData);
+    if (started == 1 && globEmotionData !== false) {
+        colEmotionData.push(globEmotionData);
+    }
 }, 1000);
 
 
