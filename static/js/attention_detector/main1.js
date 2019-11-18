@@ -6,10 +6,12 @@ var colEmotionData = [];
 var started = 0;
 var midContentDiv;
 var done_submitting = 0;
+let commServer;
 
 window.setInterval(function(){
     if (started == 1 && globEmotionData !== false) {
         colEmotionData.push(globEmotionData);
+        commServer.send(JSON.stringify(globEmotionData));
     }
 }, 1000);
 
@@ -135,6 +137,22 @@ $(document).ready(function(){
         $("#displayChatMessages").animate({ scrollTop: $('#displayChatMessages').prop("scrollHeight")}, 1000);
     }
     socket.onopen = function() {
+        //socket.send($('#usertext').val());
+        //alert("socket is opened")
+    }
+    // Call onopen directly if socket is already open
+    if (socket.readyState == WebSocket.OPEN) socket.onopen();
+    commServer = new WebSocket( ws_scheme + "://127.0.0.1:1337");
+    commServer.onmessage = function(e) {
+        //alert(e);
+        //msgText=$('#displayChatMessages').text();
+        //msgText +="\n";
+        msgText = e.data;
+        $('#displayChatMessages').append(msgText+"<br/>");
+        $('#usertext').val('');
+        $("#displayChatMessages").animate({ scrollTop: $('#displayChatMessages').prop("scrollHeight")}, 1000);
+    }
+    commServer.onopen = function() {
         //socket.send($('#usertext').val());
         //alert("socket is opened")
     }
