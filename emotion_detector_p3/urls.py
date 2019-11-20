@@ -14,7 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, re_path
 from test_app import views
 
 urlpatterns = [
@@ -44,8 +44,8 @@ urlpatterns = [
     path(r'teacher_new_lectures/', views.teacher_new_lectures, name='teacher_new_lectures'),
     path(r'student_prev_lectures/', views.student_prev_lectures, name='student_prev_lectures'),
     path(r'student_new_lectures/', views.student_new_lectures, name='student_new_lectures'),
-    path(r'attend_lecture_student/(?P<lecture_id1>\d+)/', views.attend_lecture_student, name='attend_lecture_student'),
-    path(r'start_lecture_teacher/(?P<lecture_id1>\d+)/', views.start_lecture_teacher, name='start_lecture_teacher'),
+    re_path(r'attend_lecture_student/(?P<lecture_id1>\d+)/', views.attend_lecture_student, name='attend_lecture_student'),
+    re_path(r'start_lecture_teacher/(?P<lecture_id1>\d+)/', views.start_lecture_teacher, name='start_lecture_teacher'),
     path(r'login_combined_app_rl/', views.login_combined_app_rl, name='login_combined_app_rl'),
     path(r'error_page/', views.error_page, name='error_page'),
     path(r'ongoing_lecture_page/', views.ongoing_lecture_page, name='ongoing_lecture_page'),
