@@ -9,9 +9,9 @@ from django.db import models
 
 
 class Userprofile(models.Model):
-    createdat = models.CharField(db_column='createdAt', max_length=-1, blank=True, null=True)  # Field name made lowercase.
-    updatedat = models.CharField(db_column='updatedAt', max_length=-1, blank=True, null=True)  # Field name made lowercase.
-    id = models.AutoField()
+    createdat = models.CharField(db_column='createdAt', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    updatedat = models.CharField(db_column='updatedAt', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    id = models.AutoField(primary_key=True)
     userid = models.TextField(blank=True, null=True)
     email = models.TextField(blank=True, null=True)
     phone = models.TextField(blank=True, null=True)
