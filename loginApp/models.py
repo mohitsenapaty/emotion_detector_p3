@@ -19,6 +19,7 @@ class Userprofile(models.Model):
     lastname = models.TextField(blank=True, null=True)
     password = models.TextField(blank=True, null=True)
     refid = models.TextField(blank=True, null=True)
+    isteacher = models.IntegerField(blank=True, null=True)
 
     class Meta:
         managed = False
