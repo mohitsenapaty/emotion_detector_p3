@@ -43,13 +43,17 @@
                 </h2>
                 {% else %}
                 <h2 class="dropbtn1">
-                {{ username }}
+                Welcome, {{ userobject.firstname }} {{userobject.isteacher}}
                 </h2>
                     <div class="dropdown-content1">
                         <a href="/student_profile_info/" >Student Profile</a>
                         <a href="/student_prev_lectures/" >Past Lecture details</a>
                         <a href="/student_new_lectures/" >Upcoming Lecture details</a>
                         <a href="/login_combined_app/" >Login Combined App</a>
+                        {% if userobject.isteacher == 'Y' %}
+                        <a href="/teacher/createcourse/" >Create Courses</a>
+                        <a href="/teacher/viewcourse/" >View Courses</a>
+                        {% endif %}
                         <a href="/logout/" >Log Out</a>
                     </div>
                 {% endif %}

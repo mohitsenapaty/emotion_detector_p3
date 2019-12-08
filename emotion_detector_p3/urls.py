@@ -16,11 +16,14 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from loginApp import views as loginViews
+from teacherfunctions import views as tfViews
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', loginViews.home, name='home'),
     path('login/', loginViews.login, name='login'),
     path('logout/', loginViews.logout, name='logout'),
+    path('teacher/createcourse/', tfViews.createcourse, name='createcourse'),
+    path('teacher/viewcourse/', tfViews.getallcourseforteacher, name='getallcourseforteacher'),
     #url(r'^$', views.home, name='home'),
 ]

@@ -1,0 +1,110 @@
+{% load static %}
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+    <HEAD>
+        <META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=utf-8">
+        <TITLE>Simple Demonstration of how WebGazer.js works</TITLE>
+	    <link rel="stylesheet" type="text/css" href="{% static 'styles/common/home_style.css'%}">
+	    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+        <script>
+        $(document).ready(function() {
+          $("#date").datepicker();
+        });
+        </script>
+    </HEAD>
+    <BODY>
+	<div class="top"> 
+		<p>
+		<center>Teaching with Technology</center>	
+		</p>
+	</div>
+	<div class="left">
+		
+  		{% if is_logged_in == 0 %} 
+		<p>You are not logged in</p>
+	  		<p><a href="#" id ="a_log_in">Live Learning Login</a></p>
+		{% else %}
+		<p>Welcome, {{ userobject.firstname }}</p>
+        <p><a href="/teacher_profile_info/" >Profile</a></p>
+        <p><a href="/teacher_prev_lectures/" >Past Lecture details</a></p>
+        <p><a href="/teacher_new_lectures/" >Upcoming Lecture details</a></p>
+        <p><a href="/teacher_create_lecture/" >Create new lectures</a></p>
+		<p><a href="/log_out/" id ="a_log_out">Log out</a></p>
+		{% endif %}
+		<p><a href="/">Main Page</a></p>
+  		
+	</div>
+	<div class="main">
+	{% if error != 'None' %}
+		<div><p>{{ error }}</p></div>
+	{% endif %}
+        {% if is_logged_in == 0 %}
+	    <div>You need to login to access this page</div>
+        {% else %}
+        <div>
+            <p><center> {{ msg }} </center></p>
+            <p>
+                <center>Welcome, {{userobject.firstname}}</center>
+            </p>
+            <p>
+                User id: {{ userobject.userid }} </br>
+            </p>
+            <p>
+                <b>View your courses here.</b></br>
+                <div> 
+                    <p><table>
+                        <tr>
+                        <th>Course id</th>
+                        <th>Title</th>
+                        <th>Subject</th>
+                        <th>Description</th>
+                        <th>Designed for</th>
+                        <th>Subscription fee</th>
+                        <th>Start date</th>
+                        <th>Number of Lectures</th>
+                        <th>Number of Subscribers</th>
+                        <th>Links</th>
+                        </tr>
+                        {% for elem in courseList %}
+                            <tr>
+                            <td>{{ elem.courseid }}</td> 
+                            <td>{{ elem.title }}</td> 
+                            <td>{{ elem.subject }}</td> 
+                            <td>{{ elem.description }}</td> 
+                            <td>{{ elem.designedfor }}</td> 
+                            <td>{{ elem.subscriptionfee }}</td> 
+                            <td>{{ elem.startdate }}</td>
+                            <td>{{ elem.numlectures }}</td> 
+                            <td>{{ elem.numsubscribers }}</td>
+                            <td><a href="/start_lecture_teacher/{{elem.lecture_id}}/">Lecture Page</a></th>
+                            </tr>
+                        {% endfor %}
+                    </table></p>
+                </div>
+                
+            </p>
+            <p><a href="/teacher/createcourse/">Click here</a> to go back.</p>
+        </div>
+        {% endif %}
+	</div>
+	<div class="topleft">
+		<p>
+	    <center>Dharna Icon here</center>
+		</p>
+	</div>
+    </BODY>
+<script type="text/javascript"> 
+/*function funcMissionStatement(){
+	var el = document.getElementById('foo');
+	var el = document.getElementById('foo');
+	var el = document.getElementById('foo');
+	var el = document.getElementById('foo');
+	var el = document.getElementById('foo'); 
+}
+*/
+
+</HTML>
