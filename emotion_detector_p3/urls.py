@@ -25,5 +25,8 @@ urlpatterns = [
     path('logout/', loginViews.logout, name='logout'),
     path('teacher/createcourse/', tfViews.createcourse, name='createcourse'),
     path('teacher/viewcourse/', tfViews.getallcourseforteacher, name='getallcourseforteacher'),
+    #path('teacher/viewcourse/<str:courseid>/', tfViews.getsinglecourseview, name='getallcourseforteacher'),
+    path('teacher/<str:courseid>/viewlectures/', tfViews.viewlecturesforcourse, name='viewlecturesforcourse'),
+    path('teacher/<str:courseid>/createlecture/', tfViews.createlectureforcourse, name='createlectureforcourse'),
     #url(r'^$', views.home, name='home'),
 ]

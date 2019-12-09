@@ -31,6 +31,7 @@ def createcourse(request):
     template = 'createcourse.html'
     return render(request, template, createdCourse)
 
+
 '''
 fetch all active course of a teacher
 '''
@@ -43,7 +44,7 @@ def getallcourseforteacher(request):
     authObjectTeacher = teacherMethodsAuth(request)
     if authObjectTeacher.get('isAllowed') == False:
         pass
-    _id = request.session.get("id")
+    _id = authObject.get('userobject').get('id')
     allcourses = getAllCoursesForTeacherById(_id)
     allcourses['is_logged_in'] = authObject.get('is_logged_in')
     allcourses['userobject'] = authObject.get('userobject')
@@ -51,16 +52,64 @@ def getallcourseforteacher(request):
     return render(request, template, allcourses)
     pass
 
+
 '''
 fetch a single course by id
 '''
 def getcoursedetail(request):
     pass
 
+
 '''
 delete a course
 '''
 def deletecourse(request):
+    pass
+
+
+'''
+create a lecture for a course
+'''
+def createlectureforcourse(request, courseid):
+    context = locals()
+    #do authentication
+    authObject = userAuth(request)
+    if authObject.get('is_logged_in') == 0:
+        pass
+    authObjectTeacher = teacherMethodsAuth(request)
+    if authObjectTeacher.get('isAllowed') == False:
+        pass
+    if request.POST.get('topic') == None:
+        template = 'createlecture.html'
+        return render(request, template, authObject)
+    _id = authObject.get('userobject').get('id')
+    createdLectures = createLecturesForCourse(request.POST, courseid, _id)
+    createdLectures['is_logged_in'] = authObject.get('is_logged_in')
+    createdLectures['userobject'] = authObject.get('userobject')
+    createdLectures['courseid'] = courseid
+    template = 'createlecture.html'
+    return render(request, template, createdLectures)
+    pass
+    
+
+'''
+View lectures for a course
+'''
+def viewlecturesforcourse(request, courseid):
+    context = locals()
+    #do authentication
+    authObject = userAuth(request)
+    if authObject.get('is_logged_in') == 0:
+        pass
+    authObjectTeacher = teacherMethodsAuth(request)
+    if authObjectTeacher.get('isAllowed') == False:
+        pass
+    _id = authObject.get('userobject').get('id')
+    lectureList = getAllLecturesForCourse( courseid, _id)
+    lectureList['is_logged_in'] = authObject.get('is_logged_in')
+    lectureList['userobject'] = authObject.get('userobject')
+    template = 'viewlecture.html'
+    return render(request, template, lectureList)
     pass
 
 
@@ -105,5 +154,43 @@ def getAllCoursesForTeacherById(_courseof):
         print(ex)
         return {"success":0, "msg":"Sorry. Something unexpected happened."}
     return {"success":0, "msg":"Sorry. This request is not available right now."} 
+    
+    
+def createLecturesForCourse(createObj, _course, _teacher):
+    try:
+        courseObj = Courses.objects.get(courseid = _course).__dict__
+        _courseid = courseObj.id
+        _lectureid = "LEC" + str(random_with_N_digits(9))
+        _topic = createObj.get("topic")
+        _description = createObj.get("description")
+        _type = createObj.get("type")
+        _startdate = createObj.get("date")
+        _starthour = createObj.get("starthour")
+        _startmin = createObj.get("startmin")
+        _status = "ACTIVE"
+        _validitystatus = "SCHEDULED"
+        _duration = createObj.get("duration")
+        _lecturetime = "%s %s:%s:00+5:30"%(_startdate, _starthour, _startmin)
+        _lecturetimeparsed = dateutil.parser.parse(_lecturetime)
+        newLecture = Lectures(lectureid=_lectureid, topic=_topic, description=_description, courseid=_courseid, type=_type, lectureof=_teacher, duration=_duration, startdateandtime=_lecturetimeparsed, validitystatus=_validitystatus, status=_status)
+        newLecture.save()
+        return {"success":1, "msg":"Successfully added lecture."}
+    except Exception as ex:
+        print(ex)
+        return {"success":0, "msg":"Sorry. Something unexpected happened."}
+    return {"success":0, "msg":"Sorry. This request is not available right now."} 
+    pass
+    
+    
+def getAllLecturesForCourse(_course):
+    try:
+        courseObj = Courses.objects.get(courseid = _course).__dict__
+        _courseid = courseObj.id
+    except Exception as ex:
+        print(ex)
+        return {"success":0, "msg":"Sorry. Something unexpected happened."}        
+    return {"success":0, "msg":"Sorry. This request is not available right now."}
+    pass
+
     
     

@@ -1,0 +1,123 @@
+{% load static %}
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+    <HEAD>
+        <META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=utf-8">
+        <TITLE>Simple Demonstration of how WebGazer.js works</TITLE>
+	    <link rel="stylesheet" type="text/css" href="{% static 'styles/common/home_style.css'%}">
+	    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+        <script>
+        $(document).ready(function() {
+          $("#date").datepicker();
+        });
+        </script>
+    </HEAD>
+    <BODY>
+	<div class="top"> 
+		<p>
+		<center>Teaching with Technology</center>	
+		</p>
+	</div>
+	<div class="left">
+		
+  		{% if is_logged_in == 0 %} 
+		<p>You are not logged in</p>
+	  		<p><a href="#" id ="a_log_in">Live Learning Login</a></p>
+		{% else %}
+		<p>Welcome, {{ userobject.firstname }}</p>
+        <p><a href="/teacher_profile_info/" >Profile</a></p>
+        <p><a href="/teacher_prev_lectures/" >Past Lecture details</a></p>
+        <p><a href="/teacher_new_lectures/" >Upcoming Lecture details</a></p>
+        <p><a href="/teacher_create_lecture/" >Create new lectures</a></p>
+		<p><a href="/log_out/" id ="a_log_out">Log out</a></p>
+		{% endif %}
+		<p><a href="/">Main Page</a></p>
+  		
+	</div>
+	<div class="main">
+	{% if error != 'None' %}
+		<div><p>{{ error }}</p></div>
+	{% endif %}
+        {% if is_logged_in == 0 %}
+	    <div>You need to login to access this page</div>
+        {% else %}
+        <div>
+            <p><center> {{ msg }} </center></p>
+            <p>
+                <center>Welcome, {{userobject.firstname}}</center>
+            </p>
+            <p>
+                User id: {{ userobject.userid }} </br>
+            </p>
+            <p>
+                <b>Add your next lecture here.</b></br>
+
+                <form method="POST" name="CreateForm" action="/teacher/{{courseid}}/createlecture/">
+                {% csrf_token %}   
+                Topic: <input type="text" id="topic" name="topic"  placeholder="Topic"> <br />
+                Description:<br />
+                <textarea name="description" id="description" placeholder="Enter description in around 200 words" cols="200"></textarea> <br />
+                Type: <input type="text" id="type" name="type"  placeholder="Type: ONLINE/OFFLINE"> <br />
+                Duration: <input type="text" id="duration" name="duration"  placeholder="Duration"> <br />
+                Date: <input id = "date" name="date"> <br />
+                Start Time: Hour: <select name="starthour" id="start_hour">
+                                    <option value="0">00</option>
+                                    <option value="1">01</option>
+                                    <option value="2">02</option>
+                                    <option value="3">03</option>
+                                    <option value="4">04</option>
+                                    <option value="5">05</option>
+                                    <option value="6">06</option>
+                                    <option value="7">07</option>
+                                    <option value="8">08</option>
+                                    <option value="9">09</option>
+                                    <option value="10">10</option>
+                                    <option value="11">11</option>
+                                    <option value="12">12</option>
+                                    <option value="13">13</option>
+                                    <option value="14">14</option>
+                                    <option value="15">15</option>
+                                    <option value="16">16</option>
+                                    <option value="17">17</option>
+                                    <option value="18">18</option>
+                                    <option value="19">19</option>
+                                    <option value="20">20</option>
+                                    <option value="21">21</option>
+                                    <option value="22">22</option>
+                                    <option value="23">23</option>
+                                  </select> 
+                            Minute: <select name="startmin" id="start_min">
+                                    <option value="0">00</option>
+                                    <option value="15">15</option>
+                                    <option value="30">30</option>
+                                    <option value="45">45</option>
+                                    <select> 
+                            <br />
+                <button type="submit">Save Changes</button>
+                </form>
+            </p>
+            <p><a href="/teacher/viewcourse/">Click here</a> to go back.</p>
+        </div>
+        {% endif %}
+	</div>
+	<div class="topleft">
+		<p>
+	    <center>Dharna Icon here</center>
+		</p>
+	</div>
+    </BODY>
+<script type="text/javascript"> 
+/*function funcMissionStatement(){
+	var el = document.getElementById('foo');
+	var el = document.getElementById('foo');
+	var el = document.getElementById('foo');
+	var el = document.getElementById('foo');
+	var el = document.getElementById('foo'); 
+}
+*/
+
+</HTML>

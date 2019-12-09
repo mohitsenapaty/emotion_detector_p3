@@ -67,7 +67,7 @@
                         <th>Start date</th>
                         <th>Number of Lectures</th>
                         <th>Number of Subscribers</th>
-                        <th>Links</th>
+                        <th>Create lecture</th>
                         </tr>
                         {% for elem in courseList %}
                             <tr>
@@ -80,14 +80,14 @@
                             <td>{{ elem.startdate }}</td>
                             <td>{{ elem.numlectures }}</td> 
                             <td>{{ elem.numsubscribers }}</td>
-                            <td><a href="/start_lecture_teacher/{{elem.lecture_id}}/">Lecture Page</a></th>
+                            <td><a href="/teacher/{{elem.courseid}}/createlecture/">Lecture Page</a></th>
                             </tr>
                         {% endfor %}
                     </table></p>
                 </div>
                 
             </p>
-            <p><a href="/teacher/createcourse/">Click here</a> to go back.</p>
+            <p><a href="/">Click here</a> to go back.</p>
         </div>
         {% endif %}
 	</div>
