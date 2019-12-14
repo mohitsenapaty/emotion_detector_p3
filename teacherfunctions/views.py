@@ -81,6 +81,7 @@ def createlectureforcourse(request, courseid):
         pass
     if request.POST.get('topic') == None:
         template = 'createlecture.html'
+        authObject['courseid'] = courseid
         return render(request, template, authObject)
     _id = authObject.get('userobject').get('id')
     createdLectures = createLecturesForCourse(request.POST, courseid, _id)
@@ -105,9 +106,10 @@ def viewlecturesforcourse(request, courseid):
     if authObjectTeacher.get('isAllowed') == False:
         pass
     _id = authObject.get('userobject').get('id')
-    lectureList = getAllLecturesForCourse( courseid, _id)
+    lectureList = getAllLecturesForCourse( courseid)
     lectureList['is_logged_in'] = authObject.get('is_logged_in')
     lectureList['userobject'] = authObject.get('userobject')
+    lectureList['courseid'] = courseid
     template = 'viewlecture.html'
     return render(request, template, lectureList)
     pass
@@ -148,7 +150,7 @@ def getAllCoursesForTeacherById(_courseof):
         courseList = []
         allCourses = Courses.objects.filter(courseof=_courseof)
         for c in allCourses:
-            courseList.append(c)
+            courseList.append(c.__dict__)
         return {"success":1, "msg":"Courses found.", "courseList":courseList}
     except Exception as ex:
         print(ex)
@@ -159,7 +161,7 @@ def getAllCoursesForTeacherById(_courseof):
 def createLecturesForCourse(createObj, _course, _teacher):
     try:
         courseObj = Courses.objects.get(courseid = _course).__dict__
-        _courseid = courseObj.id
+        _courseid = courseObj.get('id')
         _lectureid = "LEC" + str(random_with_N_digits(9))
         _topic = createObj.get("topic")
         _description = createObj.get("description")
@@ -185,7 +187,13 @@ def createLecturesForCourse(createObj, _course, _teacher):
 def getAllLecturesForCourse(_course):
     try:
         courseObj = Courses.objects.get(courseid = _course).__dict__
-        _courseid = courseObj.id
+        _courseid = courseObj.get('id')
+        allLectures = Lectures.objects.filter(courseid=_courseid)
+        print(allLectures)
+        lectureList = []
+        for l in allLectures:
+            lectureList.append(l.__dict__)
+        return {'success' : 0, 'msg' : 'Lectures found.', 'lectureList' : lectureList}
     except Exception as ex:
         print(ex)
         return {"success":0, "msg":"Sorry. Something unexpected happened."}        
