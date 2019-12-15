@@ -86,4 +86,38 @@ ALTER SEQUENCE lectures_id_seq OWNED BY lectures.id;
 
 ALTER TABLE ONLY lectures ALTER COLUMN id SET DEFAULT nextval('lectures_id_seq'::regclass);
 
+--course subscription
+CREATE TABLE coursesubscription (
+    "createdAt" character varying,
+    "updatedAt" character varying,
+    id integer NOT NULL,
+    subscriptionid text,
+    userid integer,
+    courseid int,
+    courseof int,
+    type text,
+    subscribedon text,
+    renewalstatus text,
+    autorenewal text,
+    feepaid int,
+    discount int,
+    discountCode text,
+    status text
+);
+
+CREATE SEQUENCE coursesubscription_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+        
+ALTER SEQUENCE coursesubscription_id_seq OWNED BY coursesubscription.id;
+
+ALTER TABLE ONLY coursesubscription ALTER COLUMN id SET DEFAULT nextval('coursesubscription_id_seq'::regclass);
+
+--subscriptiontype
+
+
 

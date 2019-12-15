@@ -17,6 +17,7 @@ from django.contrib import admin
 from django.urls import path
 from loginApp import views as loginViews
 from teacherfunctions import views as tfViews
+from subscription import views as subscriptionViews
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -29,4 +30,6 @@ urlpatterns = [
     path('teacher/<str:courseid>/viewlectures/', tfViews.viewlecturesforcourse, name='viewlecturesforcourse'),
     path('teacher/<str:courseid>/createlecture/', tfViews.createlectureforcourse, name='createlectureforcourse'),
     #url(r'^$', views.home, name='home'),
+    path('courseview/all/', subscriptionViews.viewallcourses, name='viewallcourses'),
+    path('subscribe/<str:courseid>/', subscriptionViews.subscribetocourse, name='subscribetocourse'),
 ]
