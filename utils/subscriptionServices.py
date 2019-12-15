@@ -2,7 +2,10 @@ import loginApp.models as loginModels
 import teacherfunctions.models as tfModels
 import subscription.models as subModels
 import hashlib
-
+import random
+from pytz import timezone 
+import datetime as dt
+import dateutil.parser
 
 def getAllCourses(offset=0, limit=0):
     try:
@@ -23,10 +26,14 @@ def getAllCourses(offset=0, limit=0):
     return {"success":0, "msg":"Sorry. This request is not available right now."} 
     
 
-def getAllCoursesSubscribed(subscriber, offset=0, limit=0):
+def getAllCoursesNotSubscribed(subscriber, offset=0, limit=0):
     try:
         courseList = []
-        allCourses = subModels.Coursesubscription.objects.filter(userid=subscriber)
+        excludeList = []
+        excludedCourses = subModels.Coursesubscription.objects.filter(userid = subscriber).select_related('courseid')
+        for e in excludedCourses:
+            excludeList.append(e.courseid.__dict__.get('id'))
+        allCourses = tfModels.Courses.objects.filter().exclude(id__in=excludeList)
         if offset == 0 and limit == 0:
             pass
         if offset > 0:
@@ -34,7 +41,28 @@ def getAllCoursesSubscribed(subscriber, offset=0, limit=0):
         if limit > 0:
             allCourses = allCourses[:(offset+limit-1):]
         for c in allCourses:
+            #courseObject = c.courseid
             courseList.append(c.__dict__)
+        return {"success":1, "msg":"Courses found.", "courseList":courseList}
+    except Exception as ex:
+        print(ex)
+        return {"success":0, "msg":"Sorry. Something unexpected happened."}
+    return {"success":0, "msg":"Sorry. This request is not available right now."} 
+
+
+def getAllCoursesSubscribed(subscriber, offset=0, limit=0):
+    try:
+        courseList = []
+        allCourses = subModels.Coursesubscription.objects.filter(userid = subscriber).select_related('courseid')
+        if offset == 0 and limit == 0:
+            pass
+        if offset > 0:
+            allCourses = allCourses[(offset-1)::]
+        if limit > 0:
+            allCourses = allCourses[:(offset+limit-1):]
+        for c in allCourses:
+            courseObject = c.courseid
+            courseList.append(courseObject.__dict__)
         return {"success":1, "msg":"Courses found.", "courseList":courseList}
     except Exception as ex:
         print(ex)
@@ -72,7 +100,7 @@ def getAllLecturesForCourse(_course):
     pass
 
 
-def subscribeUserToCourse(subscriber, courseid, subsObject):
+def subscribeUserToCourse(subscriber, _course, subsObject):
     try:
         courseObj = tfModels.Courses.objects.get(courseid = _course).__dict__
         _courseid = courseObj.get('id')
@@ -81,8 +109,9 @@ def subscribeUserToCourse(subscriber, courseid, subsObject):
         _type = subsObject.get('type')
         _currenttime = dt.datetime.now(timezone('UTC')).strftime("%Y-%m-%d %H:%M:%S")
         _currenttimeparsed = dateutil.parser.parse(_currenttime)
-        subCreated = subModels.Coursesubscription(subscriptionid=_subid, userid=subscriber, courseid=_courseid, courseof=_userid, type=_type, subscribedon=_currenttimeparsed, feepaid=0, status='ACTIVE')
+        subCreated = subModels.Coursesubscription(subscriptionid=_subid, userid=loginModels.Userprofile(id=subscriber), courseid=tfModels.Courses(id=_courseid), courseof=loginModels.Userprofile(id=_userid), type=_type, subscribedon=_currenttimeparsed, feepaid=0, status='ACTIVE')
         subCreated.save()
+        return {"success":1, "msg":"Successfully enrolled to the course."}
     except Exception as ex:
         print(ex)
         return {"success":0, "msg":"Sorry. Something unexpected happened."}

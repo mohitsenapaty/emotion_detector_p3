@@ -22,7 +22,9 @@ def viewallcourses(request):
     #courseList = 
     offset = request.POST.get('offset', 0)
     limit = request.POST.get('limit', 0)
-    allcourses = subscriptionServices.getAllCourses(offset, limit)
+    _id = authObject.get('userobject').get('id')
+    #allcourses = subscriptionServices.getAllCourses(offset, limit)
+    allcourses = subscriptionServices.getAllCoursesNotSubscribed(_id, offset, limit)
     allcourses['is_logged_in'] = authObject.get('is_logged_in')
     allcourses['userobject'] = authObject.get('userobject')
     template = 'viewcourseall.html'
@@ -43,7 +45,7 @@ def viewsubscribedcourses(request):
     offset = request.POST.get('offset', 0)
     limit = request.POST.get('limit', 0)
     _id = authObject.get('userobject').get('id')
-    allcourses = subscriptionServices.getAllCoursesSubscribed(offset, limit, _id)
+    allcourses = subscriptionServices.getAllCoursesSubscribed(_id, offset, limit)
     allcourses['is_logged_in'] = authObject.get('is_logged_in')
     allcourses['userobject'] = authObject.get('userobject')
     template = 'viewcourseall.html'
@@ -62,6 +64,7 @@ def subscribetocourse(request, courseid):
         pass
     if not request.POST.get('type'):
         template = 'subscribecourse.html'
+        authObject['courseid'] = courseid
         return render(request, template, authObject)
     _id = authObject.get('userobject').get('id')
     subscribed = subscriptionServices.subscribeUserToCourse(_id, courseid, request.POST)

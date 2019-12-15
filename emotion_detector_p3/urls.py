@@ -32,4 +32,5 @@ urlpatterns = [
     #url(r'^$', views.home, name='home'),
     path('courseview/all/', subscriptionViews.viewallcourses, name='viewallcourses'),
     path('subscribe/<str:courseid>/', subscriptionViews.subscribetocourse, name='subscribetocourse'),
+    path('viewsubscribedcourses/', subscriptionViews.viewsubscribedcourses, name='viewsubscribedcourses'),
 ]
