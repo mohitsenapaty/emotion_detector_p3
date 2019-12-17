@@ -116,5 +116,22 @@ def viewlecturesforcourse(request, courseid):
     return render(request, template, lectureList)
     pass
 
+
+'''
+start lecture page teacher
+'''
+def startlecturepage(request, lectureid):
+    context = locals()
+    #do authentication
+    authObject = userAuth(request)
+    if authObject.get('is_logged_in') == 0:
+        pass
+    authObjectTeacher = teacherMethodsAuth(request)
+    if authObjectTeacher.get('isAllowed') == False:
+        pass
+    template='ongoinglecturepage.html'    
+    return render(request, template, authObject)
     
-    
+
+ 
+ 

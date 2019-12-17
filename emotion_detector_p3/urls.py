@@ -33,4 +33,6 @@ urlpatterns = [
     path('courseview/all/', subscriptionViews.viewallcourses, name='viewallcourses'),
     path('subscribe/<str:courseid>/', subscriptionViews.subscribetocourse, name='subscribetocourse'),
     path('viewsubscribedcourses/', subscriptionViews.viewsubscribedcourses, name='viewsubscribedcourses'),
+    #
+    #path('teacher/<str:lectureid>/lecturepage/', tfViews.startlecturepage, name='startlecturepage'),
 ]
