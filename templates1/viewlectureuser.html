@@ -54,33 +54,32 @@
                 User id: {{ userobject.userid }} </br>
             </p>
             <p>
-                <b>View all courses here.</b></br>
+                <b>View your lectures for the {{courseid}} here.</b></br>
                 <div> 
                     <p><table>
                         <tr>
-                        <th>Course id</th>
-                        <th>Title</th>
-                        <th>Subject</th>
+                        <th>Lecture id</th>
+                        <th>Topic</th>
                         <th>Description</th>
-                        <th>Designed for</th>
-                        <th>Subscription fee</th>
-                        <th>Start date</th>
-                        <th>Number of Lectures</th>
-                        <th>Number of Subscribers</th>
-                        <th>Subscribe to the lecture</th>
+                        <th>Duration for</th>
+                        <th>Start date and time</th>
+                        
+                        <th>Type</th>
+                        <th>Status</th>
+                        <th>Validity Status</th>
+                        <th>Go to lecture page</th>
                         </tr>
-                        {% for elem in courseList %}
+                        {% for elem in lectureList %}
                             <tr>
-                            <td>{{ elem.courseid }}</td> 
-                            <td>{{ elem.title }}</td> 
-                            <td>{{ elem.subject }}</td> 
+                            <td>{{ elem.lectureid }}</td> 
+                            <td>{{ elem.topic }}</td>  
                             <td>{{ elem.description }}</td> 
-                            <td>{{ elem.designedfor }}</td> 
-                            <td>{{ elem.subscriptionfee }}</td> 
-                            <td>{{ elem.startdate }}</td>
-                            <td>{{ elem.numlectures }}</td> 
-                            <td>{{ elem.numsubscribers }}</td>
-                            <td><a href="/course/{{elem.courseid}}/viewlectures/">Lecture Page</a></th>
+                            <td>{{ elem.duration }}</td> 
+                            <td>{{ elem.startdateandtime }}</td> 
+                            <td>{{ elem.type }}</td>
+                            <td>{{ elem.status }}</td> 
+                            <td>{{ elem.validitystatus }}</td>
+                            <td><a href="/lecture/{{elem.lectureid}}/lecturepageuser/">Lecture Page</a></th>
                             </tr>
                         {% endfor %}
                     </table></p>

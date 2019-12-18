@@ -18,6 +18,7 @@ from django.urls import path
 from loginApp import views as loginViews
 from teacherfunctions import views as tfViews
 from subscription import views as subscriptionViews
+from lecturefunctions import views as lfViews
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -33,6 +34,8 @@ urlpatterns = [
     path('courseview/all/', subscriptionViews.viewallcourses, name='viewallcourses'),
     path('subscribe/<str:courseid>/', subscriptionViews.subscribetocourse, name='subscribetocourse'),
     path('viewsubscribedcourses/', subscriptionViews.viewsubscribedcourses, name='viewsubscribedcourses'),
+    path('course/<str:courseid>/viewlectures/', subscriptionViews.viewlecturesforcourse, name='viewlecturesforcourse'),
     #
-    #path('teacher/<str:lectureid>/lecturepage/', tfViews.startlecturepage, name='startlecturepage'),
+    #path('teacher/<str:lectureid>/lecturepage/', lfViews.startlecturepage, name='startlecturepage'),
+    path('lecture/<str:lectureid>/lecturepageuser/', lfViews.startlecturepageuser, name='startlecturepageuser'),
 ]

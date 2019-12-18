@@ -8,6 +8,7 @@ from utils import subscriptionServices
 import random
 from pytz import timezone 
 from .models import *
+from utils import teacherFunctions
 
 # Create your views here.
 '''
@@ -75,3 +76,24 @@ def subscribetocourse(request, courseid):
     return render(request, template, subscribed)
     pass
 
+
+'''
+View lectures for a course
+'''
+def viewlecturesforcourse(request, courseid):
+    context = locals()
+    #do authentication
+    authObject = userAuth(request)
+    if authObject.get('is_logged_in') == 0:
+        pass
+    #authObjectTeacher = teacherMethodsAuth(request)
+    #if authObjectTeacher.get('isAllowed') == False:
+    #    pass
+    _id = authObject.get('userobject').get('id')
+    lectureList = teacherFunctions.getAllLecturesForCourse( courseid)
+    lectureList['is_logged_in'] = authObject.get('is_logged_in')
+    lectureList['userobject'] = authObject.get('userobject')
+    lectureList['courseid'] = courseid
+    template = 'viewlectureuser.html'
+    return render(request, template, lectureList)
+    pass
