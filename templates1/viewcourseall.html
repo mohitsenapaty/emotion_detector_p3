@@ -67,7 +67,8 @@
                         <th>Start date</th>
                         <th>Number of Lectures</th>
                         <th>Number of Subscribers</th>
-                        <th>Subscribe to the lecture</th>
+                        <th>View All Lectures</th>
+                        <th>Subscribe to Course</th>
                         </tr>
                         {% for elem in courseList %}
                             <tr>
@@ -81,6 +82,7 @@
                             <td>{{ elem.numlectures }}</td> 
                             <td>{{ elem.numsubscribers }}</td>
                             <td><a href="/course/{{elem.courseid}}/viewlectures/">Lecture Page</a></th>
+                            <td><a href="/subscribe/{{elem.courseid}}/">Lecture Page</a></th>
                             </tr>
                         {% endfor %}
                     </table></p>

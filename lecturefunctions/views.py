@@ -8,6 +8,6 @@ def startlecturepageuser(request, lectureid):
     authObject = userAuth(request)
     if authObject.get('is_logged_in') == 0:
         pass
-    template = 'lectureforuser.html'
+    template = 'lectureforuser1.html'
     return render(request, template, authObject)
     pass

@@ -1,0 +1,273 @@
+{% load static %}
+<!DOCTYPE html>
+<!--
+This is an example HTML that shows how WebGazer can be used on a website.
+This file provides the additional features:
+  * An integrated, intuitive and sleek action bar with an informative "help" module accessible at all times
+  * Structured 9-point calibration system
+  * Accuracy measure of predictions based on calibration process
+  * Video feedback regarding face positioning
+  * Improved eye predictions visible to the user
+Instructions on use can be found in the README repository.
+-->
+<html>
+    <head>
+        <META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=utf-8">
+        <TITLE>WebGazer Demo</TITLE>
+        <link rel="stylesheet" type="text/css" href="{% static 'styles/attention_detector/style.css'%}">
+        <link rel="stylesheet" type="text/css" href="{% static 'styles/attention_detector/style1.css'%}">
+        <link href="{% static 'styles/attention_detector/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
+        <link href="{% static 'styles/emotion_detector/bootstrap.min.css' %}" rel="stylesheet" type="text/css">        
+        <script async type="text/javascript" src="{% static 'js/attention_detector/webgazer2.js' %}"></script>
+        <style>
+            @import url(https://fonts.googleapis.com/css?family=Lato:300italic,700italic,300,700);
+            
+            body {
+                font-family: 'Lato';
+                background-color: #f0f0f0;
+                margin: 0px auto;
+                /*max-width: 1150px;*/
+            }
+            
+            #overlay {
+                position: absolute;
+                top: 0px;
+                left: 0px;
+                -o-transform : scaleX(-1);
+                -webkit-transform : scaleX(-1);
+                transform : scaleX(-1);
+                -ms-filter : fliph; /*IE*/
+                filter : fliph; /*IE*/
+
+                width : 320px;
+                height : 240px;
+            }
+
+            #videoel {
+                -o-transform : scaleX(-1);
+                -webkit-transform : scaleX(-1);
+                transform : scaleX(-1);
+                -ms-filter : fliph; /*IE*/
+                filter : fliph; /*IE*/
+
+                width : 320px;
+                height : 240px;
+            }
+            
+            #container {
+                position : relative;
+                width : 320px;
+                /*margin : 0px auto;*/
+            }
+            
+            #content {
+                /*margin-top : 50px;
+                margin-left : auto;
+                margin-right : auto;
+                max-width: 600px;
+                */
+                position: absolute;
+                top:0%;
+                left:0%;
+                width:320px;
+                height:240px;
+        
+            }
+            
+            #sketch, #filter {
+                display: none;
+            }
+            
+            h2 {
+                font-weight : 400;
+            }
+            
+            .btn {
+                font-family: 'Lato';
+                font-size: 16px;
+            }
+
+            #controls {
+        position: absolute;
+        top:700px;
+                text-align : center;
+            }
+
+            #emotion_container {
+        position: absolute;
+        top:500px;
+                width: 320px;
+            }
+
+            #emotion_icons {
+        position: absolute;
+                height: 40px;
+                padding-left: 30px;
+            }
+
+            .emotion_icon {
+                width : 32px;
+                height : 32px;
+                margin-top: 4px;
+                /*margin-left : 13px;*/
+                margin-left : 25px;
+            }
+
+            #emotion_chart, #emotion_icons {
+        position: absolute;
+                margin: 0 auto;
+                width : 320px;
+            }
+
+            #icon1, #icon2, #icon3, #icon4, #icon5, #icon6 {
+                visibility : hidden;
+            }
+
+            /* d3 */
+            .bar {
+                fill : steelblue;
+                fill-opacity : .9;
+            }
+
+        </style>
+        <script src="{% static 'js/emotion_detector/decorator_js/libs/utils.js' %}"></script>
+        <script src="{% static 'js/emotion_detector/decorator_js/libs/Stats.js' %}"></script>
+        <script src="{% static 'js/emotion_detector/decorator_js/libs/d3.min.js' %}"></script>
+        <script src="{% static 'js/emotion_detector/main_js/clmtrackr1.js' %}"></script>
+        <script src="{% static 'js/emotion_detector/model_js/model_pca_20_svm.js' %}"></script>
+        <script src="{% static 'js/emotion_detector/decorator_js/emotionmodel1.js' %}"></script>
+        <script src="{% static 'js/emotion_detector/decorator_js/emotion_classifier1.js' %}"></script>
+    </head>
+    <body LANG="en-US" LINK="#0000ff" DIR="LTR">
+
+    <div id="content">
+      <canvas id="plotting_canvas" width="320" height="240" style="cursor:crosshair;"></canvas>
+      <video id="videoel" width="320" height="240" preload="auto" loop>
+                </video>
+    </div>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="{% static 'js/attention_detector/sweetalert.min.js' %}"></script>
+
+        <script src="{% static 'js/appscript/main.js' %}"></script>
+        <script src="{% static 'js/attention_detector/calibration.js' %}"></script>
+        <script src="{% static 'js/attention_detector/precision_calculation.js' %}"></script>
+        <script src="{% static 'js/attention_detector/precision_store_points.js' %}"></script>
+    <div id="accordion-resizer" class="ui-widget-content" style="position:absolute; bottom:0px; width:20%; height:33%; right:0%">
+        <div id="accordion" style="position:absolute; bottom:0px;width:100%;" class="ui-accordion ui-widget ui-helper-reset">
+            <h3>Chat</h3>
+            <div>
+                <div id="displayChatMessages" style="overflow-y: auto; height:90%; word-wrap: break-word;"></div>
+                <div id="sendChatMessages" style="position:relative; bottom:0%;">
+                {% if is_logged_in == 1 %}
+                    {% csrf_token %}
+                    <textarea rows="1" cols="43" id="usertext" placeholder="type here to ask doubt"></textarea>
+                {% else %}
+                <p>
+                    You are Not logged in. Click <a href="/login_page/">here<a> to go to the lecture page.<br />
+                    Alternatively, click <a href="/">here<a> to Go to the main page. 
+                </p>
+                {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id = "loginInfo" style="position:absolute; top:97%; left:2%">
+    Username:{% if username %} {{ username }} {% endif %}
+    </div>
+        <nav id="webgazerNavbar" class="navbar navbar-default navbar-fixed-top">
+          <div class="container-fluid">
+            <div class="navbar-header">
+              <!-- The hamburger menu button -->
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+            </div>
+            <div class="collapse navbar-collapse" id="myNavbar">
+              <ul class="nav navbar-nav">
+                <!-- Accuracy -->
+                <li id="Accuracy"><a>Not yet Calibrated</a></li>
+                <li onclick="Restart()"><a href="#">Recalibrate</a></li>
+              </ul>
+              <ul class="nav navbar-nav navbar-right">
+                <li><button class="helpBtn" data-toggle="modal" data-target="#helpModal"><a data-toggle="modal"><span class="glyphicon glyphicon-cog"></span> Help</a></li>
+              </ul>
+            </div>
+          </div>
+        </nav>
+        <!-- Calibration points -->
+        <div class="calibrationDiv">
+            <input type="button" class="Calibration" id="Pt1"></input>
+            <input type="button" class="Calibration" id="Pt2"></input>
+            <input type="button" class="Calibration" id="Pt3"></input>
+            <input type="button" class="Calibration" id="Pt4"></input>
+            <input type="button" class="Calibration" id="Pt5"></input>
+            <input type="button" class="Calibration" id="Pt6"></input>
+            <input type="button" class="Calibration" id="Pt7"></input>
+            <input type="button" class="Calibration" id="Pt8"></input>
+            <input type="button" class="Calibration" id="Pt9"></input>
+        </div>
+
+        <!-- Modal -->
+        <div id="helpModal" class="modal fade" role="dialog">
+          <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+              <div class="modal-body">
+                <img src="{% static 'media/calibration.png' %}" width="100%" height="100%" alt="webgazer demo instructions"></img>
+              </div>
+              <div class="modal-footer">
+                <button id="closeBtn" type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button id="doneCalib" type="button" class="btn btn-default" data-dismiss="modal" onclick="changeScreen()">Go To Lecture</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="Restart()">Calibrate</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Latest compiled JavaScript -->
+        <script src="{% static 'js/attention_detector/resize_canvas.js' %}"></script>
+        <script src="{% static 'js/attention_detector/bootstrap.min.js' %}"></script>
+
+        <div id = "displayDiv" style="display:none">
+    
+            <div id="midContent" style="position:absolute; top:2%; left:60%" >
+
+            </div>
+            <div id="youtubeIframe" style="position:absolute; top:15%; left:20%; right:20%; bottom:15%; background-color:green;" >
+            <iframe src="https://www.youtube.com/embed/f7rRi0EUHiM?ecver=1" width="100%" height="100%" frameborder="0" fs="0"></iframe>
+            </div>
+            <div id ="attentionDisplayDiv" style="position:absolute; top:90%; right:90%; height:70px; width:160px">No Position Detected!</div>
+            <div id ="buttonBox" style="position:absolute; top:90%; right:10%; height:80px; width:160px">
+                
+                <p id="statusRecord">Not Recording</p>
+            </div>
+            <div id ="buttonBox" style="position:absolute; top:90%; right:4%; height:40px; width:80px">
+                <!--<button id="bSend" name="bSend">Send Data</button>-->
+            </div>
+            <div id="emotion_container">
+                <div id="emotion_icons">
+                    <img class="emotion_icon" id="icon1" src="{% static 'media/emotion_detection/icon_angry.png'%}">
+                    <img class="emotion_icon" id="icon2" src="{% static 'media/emotion_detection/icon_sad.png'%}">
+                    <img class="emotion_icon" id="icon3" src="{% static 'media/emotion_detection/icon_surprise.png'%}">
+                    <img class="emotion_icon" id="icon4" src="{% static 'media/emotion_detection/icon_happy.png'%}">
+                </div>
+                <div id='emotion_chart'></div>
+            </div>
+            <div id="controls">
+                <input class="btn" type="button" value="wait, loading video" disabled="disabled" onclick="globalRecordData()" id="startbutton"></input>
+                <button id="btnSend">Send Data</button>
+            </div>
+        </div>
+        <script>
+
+
+</script>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/json2/20160511/json2.min.js"></script>
+        <script src="{% static 'js/attention_detector/webgazer2.js' %}"></script>
+    </body>
+</html>
