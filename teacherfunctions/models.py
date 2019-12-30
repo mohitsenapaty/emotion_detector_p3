@@ -38,6 +38,7 @@ class Lectures(models.Model):
     duration = models.IntegerField(blank=True, null=True)
     validitystatus = models.TextField(blank=True, null=True)
     status = models.TextField(blank=True, null=True)
+    vidcontentlink = models.TextField(blank=True, null=True)
 
     class Meta:
         managed = False

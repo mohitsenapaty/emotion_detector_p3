@@ -172,7 +172,7 @@ Instructions on use can be found in the README repository.
         </div>
     </div>
     <div id = "loginInfo" style="position:absolute; top:97%; left:2%">
-    Username:{% if username %} {{ username }} {% endif %}
+    Username:{% if username %} {{ username }} {% endif %} {{ lectureObject.vidcontentlink }}
     </div>
         <nav id="webgazerNavbar" class="navbar navbar-default navbar-fixed-top">
           <div class="container-fluid">
@@ -238,7 +238,7 @@ Instructions on use can be found in the README repository.
 
             </div>
             <div id="youtubeIframe" style="position:absolute; top:15%; left:20%; right:20%; bottom:15%; background-color:green;" >
-            <iframe src="https://www.youtube.com/embed/live_stream?channel=UCR2jOsWA99lsdb1LxEv059w" width="100%" height="100%" frameborder="0" fs="0"></iframe>
+            <iframe src="{{ lectureObject.vidcontentlink }}" width="100%" height="100%" frameborder="0" fs="0"></iframe>
             </div>
             <div id ="attentionDisplayDiv" style="position:absolute; top:90%; right:90%; height:70px; width:160px">No Position Detected!</div>
             <div id ="buttonBox" style="position:absolute; top:90%; right:10%; height:80px; width:160px">

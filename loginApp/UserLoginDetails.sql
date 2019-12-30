@@ -117,7 +117,7 @@ ALTER SEQUENCE coursesubscription_id_seq OWNED BY coursesubscription.id;
 
 ALTER TABLE ONLY coursesubscription ALTER COLUMN id SET DEFAULT nextval('coursesubscription_id_seq'::regclass);
 
---subscriptiontype
-
+--add course internal link
+ALTER TABLE ONLY lectures ADD COLUMN vidcontentlink text;
 
 

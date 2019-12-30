@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from utils.doAuth import *
+from utils import lectureServices
 
 # Create your views here.
 def startlecturepageuser(request, lectureid):
@@ -8,6 +9,10 @@ def startlecturepageuser(request, lectureid):
     authObject = userAuth(request)
     if authObject.get('is_logged_in') == 0:
         pass
+    lectureObject = lectureServices.getLectureDetailsObject(lectureid)
+    #check sanity (implement later)
+    lectureObject['is_logged_in'] = authObject.get('is_logged_in')
+    lectureObject['userobject'] = authObject.get('userobject')
     template = 'lectureforuser1.html'
-    return render(request, template, authObject)
+    return render(request, template, lectureObject)
     pass
