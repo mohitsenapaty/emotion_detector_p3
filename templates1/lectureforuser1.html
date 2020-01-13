@@ -19,6 +19,12 @@ Instructions on use can be found in the README repository.
         <link href="{% static 'styles/attention_detector/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
         <link href="{% static 'styles/emotion_detector/bootstrap.min.css' %}" rel="stylesheet" type="text/css">        
         <script async type="text/javascript" src="{% static 'js/attention_detector/webgazer2.js' %}"></script>
+        <script src="{% static 'js/appscript/sails.io.js' %}"></script>
+        <script>
+            io.sails.url = 'http://localhost:1337';
+            let lectureidForJS = "{{lectureObject.lectureid}}";
+            let userstudentid = "{{userobject.userid}}";
+        </script>
         <style>
             @import url(https://fonts.googleapis.com/css?family=Lato:300italic,700italic,300,700);
             

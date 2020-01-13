@@ -6,11 +6,38 @@ var colEmotionData = [];
 var started = 0;
 var midContentDiv;
 var done_submitting = 0;
-
+let sendDataParams = {
+    method: 'POST',
+    url: '/student/ongoinglecture/'+lectureidForJS+'/',
+    headers: {
+        'Accept':'application/json',
+        'Accept-Charset':'utf-8',
+    },
+    params: {},
+    json: true,
+};
+console.log(lectureidForJS + " 1 " + userstudentid);
 //see if this function can be moved to worker
 //in worker if it is possible to do things at an interval
 window.setInterval(function(){
     if (started == 1 && globEmotionData !== false) colEmotionData.push(globEmotionData);
+    if (recordAttention == 1) {
+        if (!isNaN(attentionPercent))
+            colAttentionData.push(attentionPercent);
+        if (!isNaN(totalAttention)){
+            //api call
+            let dataToSend = {'studentid': userstudentid, 'attentionData': {'val': attentionCurrent}};
+            sendDataParams.params = dataToSend;
+            io.socket.request(sendDataParams, (resData, jwres) =>{
+                if (jwres.error) {
+                    console.log(jwres.statusCode); // => e.g. 403
+                    return;
+                }
+                console.log(jwres.statusCode); // => e.g. 200
+            });
+        }
+
+    }
 }, 1000);
 
 
@@ -121,6 +148,7 @@ document.addEventListener('clmtrackrIteration', function(event) {
 }, false);
 
 $(document).ready(function(){
+    /*
     var ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
     socket = new WebSocket( ws_scheme + "://" + window.location.host + "/chat/");
     socket.onmessage = function(e) {
@@ -179,15 +207,20 @@ $(document).ready(function(){
         }
         
     });
+    */
 });
 
 var recordAttention = 0;
 var attentionPercent = -1.00;
+var totalAttention = 0.00;
+let attentionCurrent = 0;
 var colAttentionData = [];
 
+/*
 window.setInterval(function(){
     if (recordAttention == 1) colAttentionData.push(attentionPercent);
 }, 1000);
+*/
 
 function Restart(){
     document.getElementById("Accuracy").innerHTML = "<a>Not yet Calibrated</a>";
@@ -205,7 +238,6 @@ window.onload = function() {
     var videoDivRect = document.getElementById("youtubeIframe");
     midContentDiv = document.getElementById("midContent");
 
-    var totalAttention = 0.00;
     var attentionArray = [];
     var a_cntr = 0;
     var a1_cntr = 0;
@@ -438,9 +470,11 @@ window.onload = function() {
                     }
                     if (a_sum >= 5){
                         totalAttention += 1;
+                        attentionCurrent = 1;
                     }
                     else{
                         totalAttention += 0;
+                        attentionCurrent = 0;
                     }
                     attentionArray = [];
                     

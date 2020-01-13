@@ -1,0 +1,18 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <script>
+        let lectureidForJS = "{{lectureObject.lectureid}}";
+        let userteacherid = "{{userobject.userid}}";
+    </script>
+</head>
+<body>
+    <script src="{% static 'js/appscript/dashboard_worker.js' %}"></script>
+    <p>Count numbers: <output id="result"></output></p>
+    <button onclick="startWorker()">Start Worker</button> 
+    <button onclick="stopWorker()">Stop Worker</button>
+    <br /><br />
+</body>
+</html>
