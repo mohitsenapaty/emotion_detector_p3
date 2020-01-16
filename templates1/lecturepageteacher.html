@@ -7,12 +7,19 @@
         let lectureidForJS = "{{lectureObject.lectureid}}";
         let userteacherid = "{{userobject.userid}}";
     </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.15/lodash.min.js"></script>
 </head>
 <body>
     <script src="{% static 'js/appscript/dashboard_worker.js' %}"></script>
+    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
     <p>Count numbers: <output id="result"></output></p>
     <button onclick="startWorker()">Start Worker</button> 
     <button onclick="stopWorker()">Stop Worker</button>
     <br /><br />
+    <div id="chartContainer" style="height: 370px; width:100%;"></div>
+    <div>
+        <p>Connected Students:</p>
+    </div>
+    <div id="connectedStudents"></div>
 </body>
 </html>
