@@ -1,7 +1,7 @@
 var vid;
 var overlay = document.getElementById('plotting_canvas');
 var overlayCC = overlay.getContext('2d');
-var globEmotionData;
+var globEmotionData = {};
 var colEmotionData = [];
 var started = 0;
 var midContentDiv;
@@ -20,13 +20,10 @@ console.log(lectureidForJS + " 1 " + userstudentid);
 //see if this function can be moved to worker
 //in worker if it is possible to do things at an interval
 window.setInterval(function(){
-    if (started == 1 && globEmotionData !== false) colEmotionData.push(globEmotionData);
-    if (recordAttention == 1) {
-        if (!isNaN(attentionPercent))
-            colAttentionData.push(attentionPercent);
-        if (!isNaN(totalAttention)){
+    if (recordAttention == 1 && started == 1 && globEmotionData !== false) {
+        if (!isNaN(totalAttention) && globEmotionData !== undefined){
             //api call
-            let dataToSend = {'studentid': userstudentid, 'attentionData': {'val': attentionCurrent}};
+            let dataToSend = {'studentid': userstudentid, 'attentionData': {'val': attentionCurrent}, 'emData':globEmotionData};
             sendDataParams.params = dataToSend;
             io.socket.request(sendDataParams, (resData, jwres) =>{
                 if (jwres.error) {
@@ -418,11 +415,12 @@ window.onload = function() {
             var cp = ctrack.getCurrentParameters();
             midContentDiv.textContent = "";
             var er = ec.meanPredict(cp);
-            globEmotionData = er;
+            //globEmotionData = er;
             if (er) {
                 updateData(er);
                 for (var i = 0;i < er.length;i++) {
                     midContentDiv.textContent += er[i].emotion + " " + er[i].value + " ";
+                    globEmotionData[er[i].emotion]=er[i].value;
                     if (er[i].value > 0.4) {
                         document.getElementById('icon'+(i+1)).style.visibility = 'visible';
                     } else {

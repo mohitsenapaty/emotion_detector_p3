@@ -38,7 +38,14 @@ let numPoints = 0;
 let sumAvgTotal = 0.0;
 let avgTotal = 0.0;
 let avgTotalArr = [];
+let sumAvgTotalEmotion;
 let studentDataObj = {};
+let avgTotalArrEm = {
+    anger : [], happy : [], sad : [], surprised : []
+};
+let lastAttentionSeq = -1;
+let renderNow = false;
+let lastRenderCycle = -1;
 //var mySocket = io.sails.connect();
 
 function startWorker()
@@ -58,8 +65,9 @@ function startWorker()
             studentDataObj = {};
             numStudents = 0;
             sumAvgTotal = 0.0;
+            sumAvgTotalEmotion = {anger: 0.0, happy: 0.0, sad: 0.0, surprised: 0.0};
             _.forEach(message, (k, v)=>{
-                if (!_.isEmpty(v) && _.isNumber(k.avgAttentionCurrent)){
+                if (!_.isEmpty(v) && _.isNumber(k.avgAttentionCurrent) && k.attentionSeq != lastAttentionSeq){
                     let studentid = v;
                     let studentData = k;
                     numStudents += 1;
@@ -68,11 +76,23 @@ function startWorker()
                     if (studentData.totalAttentionSum > maxPoints){
                         maxPoints = studentData.totalAttentionSum;
                     }
+                    sumAvgTotalEmotion.anger += k.emCurrent.anger;
+                    sumAvgTotalEmotion.happy += k.emCurrent.happy;
+                    sumAvgTotalEmotion.sad += k.emCurrent.sad;
+                    sumAvgTotalEmotion.surprised += k.emCurrent.surprised;
+                    lastAttentionSeq = k.attentionSeq;
+                    renderNow = true;
+                } else {
+                    renderNow = false;
                 }
             });
             if (numStudents > 0){
                 avgTotal = sumAvgTotal/numStudents;
                 avgTotalArr.push(avgTotal*100);
+                avgTotalArrEm.anger.push((sumAvgTotalEmotion.anger/numStudents)*100);
+                avgTotalArrEm.happy.push((sumAvgTotalEmotion.happy/numStudents)*100);
+                avgTotalArrEm.sad.push((sumAvgTotalEmotion.sad/numStudents)*100);
+                avgTotalArrEm.surprised.push((sumAvgTotalEmotion.surprised/numStudents)*100);
                 //set to list
                 let displayStudentStr = ``;
                 _.each(studentDataObj, (k,v)=>{
@@ -104,16 +124,55 @@ function sendLectureidAndStartRead(){
 window.onload = function () {
 
     var dps = []; // dataPoints
+    var dpsEmAnger = []; // dataPoints
+    var dpsEmHappy = []; // dataPoints
+    var dpsEmSad = []; // dataPoints
+    var dpsEmSurprised = []; // dataPoints
     var chart = new CanvasJS.Chart("chartContainer", {
         title :{
-            text: "Dynamic Data"
+            text: "Attention Data"
         },
         axisY: {
             includeZero: false
         },      
         data: [{
             type: "line",
+            name: "Attention Value",
+            showInLegend: true,
             dataPoints: dps
+        }]
+    });
+
+    var emotionChart = new CanvasJS.Chart("emotionChartContainer", {
+        title :{
+            text: "Emotion Data"
+        },
+        axisY: {
+            includeZero: false
+        },      
+        data: [{
+            type: "line",
+            name: "Anger Value",
+            showInLegend: true,
+            dataPoints: dpsEmAnger
+        },
+        {
+            type: "line",
+            name: "happy Value",
+            showInLegend: true,
+            dataPoints: dpsEmHappy
+        },
+        {
+            type: "line",
+            name: "Sad Value",
+            showInLegend: true,
+            dataPoints: dpsEmSad
+        },
+        {
+            type: "line",
+            name: "Surprised Value",
+            showInLegend: true,
+            dataPoints: dpsEmSurprised
         }]
     });
 
@@ -123,38 +182,44 @@ window.onload = function () {
     var dataLength = 20; // number of dataPoints visible at any point
 
     var updateChart = function () {
+        //render only if last data recvd seq matches with the last render cycle
+        if (lastRenderCycle != -1 && lastRenderCycle != lastAttentionSeq){
+            if (avgTotalArr.length > 0){
+                dps.push({
+                    x: xVal, 
+                    y: avgTotalArr[avgTotalArr.length-1]
+                });
+                dpsEmAnger.push({
+                    x: xVal, 
+                    y: avgTotalArr[avgTotalArr.length-1]
+                });
+                dpsEmHappy.push({
+                    x: xVal, 
+                    y: avgTotalArr[avgTotalArr.length-1]
+                });
+                dpsEmSad.push({
+                    x: xVal, 
+                    y: avgTotalArr[avgTotalArr.length-1]
+                });
+                dpsEmSurprised.push({
+                    x: xVal, 
+                    y: avgTotalArr[avgTotalArr.length-1]
+                });
+                xVal += 1;
+            }
 
-        /*
-        count = count || 1;
+            if (dps.length > 0 && renderNow){
+                chart.render();
+            }
 
-        for (var j = 0; j < count; j++) {
-            yVal = yVal +  Math.round(5 + Math.random() *(-5-5));
-            dps.push({
-                x: xVal,
-                y: yVal
-            });
-            xVal++;
+            if (dpsEmAnger.length > 0 && renderNow){
+                emotionChart.render();
+            }
+
+            lastRenderCycle = lastAttentionSeq;
+        } else {
+            // do not render
         }
-        */
-        if (avgTotalArr.length > 0){
-            dps.push({
-                x: xVal, 
-                y: avgTotalArr[avgTotalArr.length-1]
-            });
-            xVal += 1;
-        }
-        /*
-        let xval = 0;
-        _.forEach(avgTotalArr, ata =>{
-            xval+=1;
-            dps.push({
-                x: xval, y: ata
-            });
-        });
-        */
-
-        if (dps.length > 0)
-            chart.render();
     };
 
     //updateChart(dataLength);
