@@ -39,4 +39,5 @@ urlpatterns = [
     #path('teacher/<str:lectureid>/lecturepage/', lfViews.startlecturepage, name='startlecturepage'),
     path('lecture/<str:lectureid>/lecturepageuser/', lfViews.startlecturepageuser, name='startlecturepageuser'),
     path('teacher/ongoinglecture/<str:lectureid>/', lfViews.startlectureteacher, name='startlectureteacher'),
+    #path('plans/createdefault/', subscriptionViews.createdefaultplans, name='createdefaultplans'),
 ]

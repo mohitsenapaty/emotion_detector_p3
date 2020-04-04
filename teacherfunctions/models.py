@@ -12,7 +12,7 @@ class Courses(models.Model):
     subject = models.TextField(blank=True, null=True)
     designedfor = models.TextField(blank=True, null=True)
     courseof = models.ForeignKey(loginModels.Userprofile, on_delete=models.SET_NULL, blank=True, null=True, db_column='courseof', related_name='courseof')
-    subscriptionfee = models.IntegerField(blank=True, null=True)
+    subscriptionfee = models.IntegerField(blank=True, null=True) #base course fee per lecture
     numlectures = models.IntegerField(blank=True, null=True)
     startdate = models.CharField(max_length=40, blank=True, null=True)
     numsubscribers = models.IntegerField(blank=True, null=True)

@@ -183,7 +183,8 @@ window.onload = function () {
 
     var updateChart = function () {
         //render only if last data recvd seq matches with the last render cycle
-        if (lastRenderCycle != -1 && lastRenderCycle != lastAttentionSeq){
+        console.log(lastRenderCycle, lastAttentionSeq);
+        if (lastRenderCycle != lastAttentionSeq){
             if (avgTotalArr.length > 0){
                 dps.push({
                     x: xVal, 
@@ -191,19 +192,19 @@ window.onload = function () {
                 });
                 dpsEmAnger.push({
                     x: xVal, 
-                    y: avgTotalArr[avgTotalArr.length-1]
+                    y: avgTotalArrEm.anger[avgTotalArrEm.anger.length-1]
                 });
                 dpsEmHappy.push({
                     x: xVal, 
-                    y: avgTotalArr[avgTotalArr.length-1]
+                    y: avgTotalArrEm.happy[avgTotalArrEm.happy.length-1]
                 });
                 dpsEmSad.push({
                     x: xVal, 
-                    y: avgTotalArr[avgTotalArr.length-1]
+                    y: avgTotalArrEm.sad[avgTotalArrEm.sad.length-1]
                 });
                 dpsEmSurprised.push({
                     x: xVal, 
-                    y: avgTotalArr[avgTotalArr.length-1]
+                    y: avgTotalArrEm.surprised[avgTotalArrEm.surprised.length-1]
                 });
                 xVal += 1;
             }

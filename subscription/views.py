@@ -66,9 +66,13 @@ def subscribetocourse(request, courseid):
     if not request.POST.get('type'):
         template = 'subscribecourse.html'
         authObject['courseid'] = courseid
+        #1. get subscription details and show
+        #2. 
         return render(request, template, authObject)
     _id = authObject.get('userobject').get('id')
-    subscribed = subscriptionServices.subscribeUserToCourse(_id, courseid, request.POST)
+    #generate soft creation page..
+    #subscribed = subscriptionServices.subscribeUserToCourse(_id, courseid, request.POST)
+    subscribed = {}
     subscribed['is_logged_in'] = authObject.get('is_logged_in')
     subscribed['userobject'] = authObject.get('userobject')
     subscribed['courseid'] = courseid
@@ -96,4 +100,14 @@ def viewlecturesforcourse(request, courseid):
     lectureList['courseid'] = courseid
     template = 'viewlectureuser.html'
     return render(request, template, lectureList)
+    pass
+
+'''
+View create default plans
+'''
+def createdefaultplans(request):
+    context = locals()
+    planscreated = {}
+    template = ''
+    return render(request, template, planscreated)
     pass

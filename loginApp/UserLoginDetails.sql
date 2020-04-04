@@ -121,3 +121,107 @@ ALTER TABLE ONLY coursesubscription ALTER COLUMN id SET DEFAULT nextval('courses
 ALTER TABLE ONLY lectures ADD COLUMN vidcontentlink text;
 
 
+-- reworking subscription and payments
+--tables -> planid, subscriptionid, userid, courseid
+--drop column
+alter table coursesubscription drop column type;
+
+alter table coursesubscription drop column renewalstatus;
+
+alter table coursesubscription drop column autorenewal;
+
+alter table coursesubscription drop column discount;
+
+alter table coursesubscription drop column discountCode;
+
+--plan
+CREATE TABLE plan (
+    "createdAt" character varying,
+    "updatedAt" character varying,
+    id integer NOT NULL,
+    planid text,
+    name text,
+    description text,
+    fee int,
+    courseid int,
+    class text,
+    addedon text,
+    duration int,
+    status text
+);
+
+CREATE SEQUENCE plan_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+        
+ALTER SEQUENCE plan_id_seq OWNED BY plan.id;
+
+ALTER TABLE ONLY plan ALTER COLUMN id SET DEFAULT nextval('plan_id_seq'::regclass);
+
+--add plan to coursesubscription
+alter table coursesubscription add column plan integer;
+
+--paymentrequest table
+CREATE TABLE paymentrequest (
+    "createdAt" character varying,
+    "updatedAt" character varying,
+    id integer NOT NULL,
+    requestid text,
+    recordedon text,
+    pgresponse json,
+    amount int,
+    discount int,
+    discountcode text,
+    status text
+);
+
+CREATE SEQUENCE paymentrequest_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+        
+ALTER SEQUENCE paymentrequest_id_seq OWNED BY paymentrequest.id;
+
+ALTER TABLE ONLY paymentrequest ALTER COLUMN id SET DEFAULT nextval('paymentrequest_id_seq'::regclass);
+
+--subsciptionpayment table (each subscription mapped to payment)
+CREATE TABLE subsciptionpayment (
+    "createdAt" character varying,
+    "updatedAt" character varying,
+    id integer NOT NULL,
+    request int NOT NULL,
+    subscription int NOT NULL,
+    amount int,
+    discount int,
+    discountcode text,
+    status text
+);
+
+CREATE SEQUENCE subsciptionpayment_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+        
+ALTER SEQUENCE subsciptionpayment_id_seq OWNED BY subsciptionpayment.id;
+
+ALTER TABLE ONLY subsciptionpayment ALTER COLUMN id SET DEFAULT nextval('subsciptionpayment_id_seq'::regclass);
+
+--plans -> add discountpercent, basemultiplier, totalfee drop fee?
+alter table plan drop column fee;
+
+alter table plan add column discountpercent int;
+
+alter table plan add column basemultiplier numeric;
+
+--paymentrequest add user, 
+alter table paymentrequest add column user int;
